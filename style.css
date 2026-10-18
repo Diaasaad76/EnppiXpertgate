@@ -1313,6 +1313,29 @@ html[lang="ar"] .enterprise-table {
     background: rgba(19, 52, 94, 0.4);
 }
 
+/* Screening Candidates Table & Visible Action Buttons */
+#screeningCandidatesTable {
+    min-width: 1050px;
+}
+
+#screeningCandidatesTable th {
+    padding: 0.75rem 0.65rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+#screeningCandidatesTable td {
+    padding: 0.75rem 0.65rem;
+}
+
+#screeningCandidatesTable th:last-child,
+#screeningCandidatesTable td:last-child {
+    min-width: 145px;
+    width: 145px;
+    padding-inline-end: 0.85rem;
+    white-space: nowrap;
+}
+
 /* Candidate Quick Pill */
 .candidate-id-code {
     font-family: monospace;

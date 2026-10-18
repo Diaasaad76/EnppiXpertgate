@@ -116,6 +116,7 @@ The application features a responsive, role-based single-page architecture with 
 | `backup_trainer_reg_before_visual_enhancement_20261018` | 2026-10-18 17:58 | Snapshot before Trainer Registration Section 1 visual redesign |
 | `backup_before_direct_manager_field_20261018` | 2026-10-18 18:08 | Snapshot before adding Direct Manager field to Section 3 |
 | `backup_before_executive_dropdown_20261018` | 2026-10-18 18:21 | Snapshot before adding Executive Overview dropdown menu & Register label |
+| `backup_before_rubric_table_overflow_fix_20261018` | 2026-10-18 19:30 | Snapshot before Candidate Table Rubric button overflow & width fix |
 
 ---
 
