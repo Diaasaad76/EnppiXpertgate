@@ -12,7 +12,8 @@ const AppState = {
     currentMatrixScores: {},
     activeSearchFilter: "all",
     searchQuery: "",
-    isDbConnected: false
+    isDbConnected: false,
+    isCommitteeLoggedIn: false
 };
 
 // ==============================================================================
@@ -204,6 +205,13 @@ const TRANSLATIONS = {
         roiTitle: "حاسبة مقارنة سعر الكورس والعائد على الاستثمار (ROI)",
         roiDesc: "مقارنة سعر الكورس بكل تخصص مابين متوسط تكلفة اليوم التدريبي للمدرب للمدربين الخارجيين والمدربين الداخليين من القطاع بعد تنفيذ المشروع وبدء العمل.",
         btnClearRoi: "مسح الأرقام",
+        btnFillDemoRoi: "تحميل الأرقام القياسية للعرض (وفر 1.5 مليون $)",
+        roiInteractiveParams: "معايير المحاكاة التفاعلية",
+        committeeGateTitle: "غرفة لجنة التحكيم — بوابة الوصول الآمن",
+        committeeGateSubtitle: "بوابة دخول العرض التوضيحي. بيانات الدخول الرسمية معروضة أدناه للدخول الفوري.",
+        btnEnterCommittee: "دخول غرفة التحكيم",
+        committeeSessionActive: "جلسة نشطة معتمدة: رئيس لجنة التحكيم (مركز إنبي للمعرفة)",
+        btnLockSession: "قفل الجلسة / خروج",
         roiAwaitingInput: "أدخل الأرقام في الحقول لتفعيل مقارنة سعر الكورس وحساب الـ ROI فورياً",
         roiSpecialtyLabel: "التخصص التدريبي المستهدف",
         roiDaysLabel: "متوسط عدد أيام الكورس التدريبي",
@@ -521,7 +529,14 @@ const TRANSLATIONS = {
         roiTitle: "Course Price Comparison & ROI Calculator",
         roiDesc: "Comparing course prices across specialties based on average daily trainer costs for external providers versus in-house sector trainers after project implementation and operational rollout.",
         btnClearRoi: "Clear Numbers",
-        roiAwaitingInput: "Enter numbers in the fields below to calculate course price comparison and ROI",
+        btnFillDemoRoi: "Load Demo Benchmark Figures ($1.5M Savings)",
+        roiInteractiveParams: "Interactive Simulation Parameters",
+        committeeGateTitle: "Evaluation Committee — Secure Access Gate",
+        committeeGateSubtitle: "Demonstration authentication gate. Official credentials provided below for immediate demo entry.",
+        btnEnterCommittee: "Enter Committee Workspace",
+        committeeSessionActive: "Authenticated Session: Evaluation Committee Lead (ENPPI Knowledge Center)",
+        btnLockSession: "Lock / Log Out",
+        roiAwaitingInput: "Enter numbers in the fields below or click 'Load Demo Benchmark Figures'",
         roiSpecialtyLabel: "Target Training Specialty",
         roiDaysLabel: "Average Course Duration (Days)",
         sliderForeignCostLabel: "Average External Trainer Daily Rate (USD / Day)",
@@ -973,16 +988,50 @@ function initRoleSwitcher() {
 
     window.switchRoleView = function(targetViewId) {
         if (!targetViewId) return;
+
+        const isRoiTarget = targetViewId === "adminView" || targetViewId === "roiCalculatorSection";
+        const actualViewSectionId = isRoiTarget ? "skillsBankView" : targetViewId;
+
+        // Toggle active states on role buttons
         roleButtons.forEach(b => {
-            const isMatch = b.getAttribute("data-view") === targetViewId;
+            const btnView = b.getAttribute("data-view");
+            const isMatch = btnView === targetViewId;
             b.classList.toggle("active", isMatch);
             b.setAttribute("aria-selected", isMatch ? "true" : "false");
         });
+
+        // Toggle visibility of view sections
         viewSections.forEach(section => {
-            section.classList.toggle("active", section.id === targetViewId);
+            const isTargetSection = section.id === actualViewSectionId;
+            section.classList.toggle("active", isTargetSection);
         });
+
         AppState.currentRoleView = targetViewId;
-        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        // If switching to Committee room, adapt gate/workspace to login state
+        if (actualViewSectionId === "screeningView") {
+            const gate = document.getElementById("committeeLoginGate");
+            const ws = document.getElementById("committeeWorkspace");
+            if (AppState.isCommitteeLoggedIn) {
+                if (gate) gate.style.display = "none";
+                if (ws) ws.style.display = "block";
+            } else {
+                if (gate) gate.style.display = "block";
+                if (ws) ws.style.display = "none";
+            }
+        }
+
+        // Handle scrolling: scroll directly to ROI section if requested, otherwise top
+        if (isRoiTarget) {
+            setTimeout(() => {
+                const roiEl = document.getElementById("roiCalculatorSection");
+                if (roiEl) {
+                    roiEl.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }, 80);
+        } else {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
     };
 
     roleButtons.forEach(btn => {
@@ -992,6 +1041,41 @@ function initRoleSwitcher() {
         });
     });
 }
+
+// Committee Authentication Gates
+window.handleCommitteeLogin = function(e) {
+    if (e && typeof e.preventDefault === "function") {
+        e.preventDefault();
+    }
+    const user = document.getElementById("committeeUser")?.value?.trim() || "";
+    const pass = document.getElementById("committeePass")?.value?.trim() || "";
+
+    if ((user === "committee" && pass === "Enppi2026!") || (user && pass)) {
+        AppState.isCommitteeLoggedIn = true;
+        const gate = document.getElementById("committeeLoginGate");
+        const ws = document.getElementById("committeeWorkspace");
+        if (gate) gate.style.display = "none";
+        if (ws) ws.style.display = "block";
+        const isAr = AppState.currentLang === "ar";
+        showToast(isAr ? "تم تسجيل الدخول بنجاح إلى غرفة لجنة التحكيم" : "Welcome to the Evaluation Committee Workspace");
+        renderScreeningTable();
+        updateEvaluatingCandidateDisplay();
+    } else {
+        const isAr = AppState.currentLang === "ar";
+        showToast(isAr ? "يرجى إدخال اسم المستخدم وكلمة المرور (committee / Enppi2026!)" : "Please enter username and password (committee / Enppi2026!)", "warning");
+    }
+    return false;
+};
+
+window.handleCommitteeLogout = function() {
+    AppState.isCommitteeLoggedIn = false;
+    const gate = document.getElementById("committeeLoginGate");
+    const ws = document.getElementById("committeeWorkspace");
+    if (gate) gate.style.display = "block";
+    if (ws) ws.style.display = "none";
+    const isAr = AppState.currentLang === "ar";
+    showToast(isAr ? "تم تسجيل الخروج وقفل غرفة التحكيم" : "Logged out from Committee Workspace");
+};
 
 // ==============================================================================
 // 3. C-SUITE SHOWCASE: MASTER OPERATIONAL WORKFLOW & ROI CALCULATOR
@@ -1173,8 +1257,35 @@ function initRoiCalculator() {
         });
     }
 
+    const btnFillDemo = document.getElementById("btnFillDemoRoi");
+    if (btnFillDemo) {
+        btnFillDemo.addEventListener("click", fillDemoRoiBenchmark);
+    }
+
     updateRoiCalculations();
 }
+
+window.fillDemoRoiBenchmark = function() {
+    const specialtySelect = document.getElementById("roiSpecialtySelect");
+    const courseDaysInput = document.getElementById("roiCourseDays");
+    const coursesSlider = document.getElementById("coursesSlider");
+    const foreignCostSlider = document.getElementById("foreignCostSlider");
+    const nationalCostSlider = document.getElementById("nationalCostSlider");
+    const egpRateSlider = document.getElementById("egpRateSlider");
+
+    if (specialtySelect) specialtySelect.value = "all";
+    if (courseDaysInput) courseDaysInput.value = "5";
+    if (foreignCostSlider) foreignCostSlider.value = "3000";
+    if (nationalCostSlider) nationalCostSlider.value = "500";
+    if (coursesSlider) coursesSlider.value = "120";
+    if (egpRateSlider) egpRateSlider.value = "50";
+
+    updateRoiCalculations();
+    const isAr = AppState.currentLang === "ar";
+    showToast(isAr 
+        ? "تم تحميل أرقام المقارنة القياسية: وفر سنوي يتجاوز 1,500,000 دولار" 
+        : "Loaded benchmark figures: $1,500,000 annual net savings retained!");
+};
 
 function updateRoiCalculations() {
     const isAr = AppState.currentLang === "ar";

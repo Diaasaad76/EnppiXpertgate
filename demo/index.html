@@ -293,13 +293,55 @@
              VIEW 2: EVALUATION COMMITTEE ROOM
              ========================================================================== -->
         <section id='screeningView' class='view-section'>
-            <div id='committeeLoginGate' style='background:rgba(14,40,73,0.7);border:1px solid rgba(212,175,55,0.35);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;'>
-                <div style='display:flex;gap:1rem;align-items:center;margin-bottom:1rem;'><i class='fa-solid fa-scale-balanced' style='font-size:1.8rem;color:var(--gold-bright);'></i><div><h3 style='margin:0;color:#FFFFFF;'>Evaluation Committee \u2014 Secure Access</h3><p style='margin:0.2rem 0 0 0;color:var(--text-muted);font-size:0.85rem;'>Demo login. Credentials displayed for live demo.</p></div></div>
-                <div style='display:flex;gap:0.65rem;flex-wrap:wrap;margin-bottom:1rem;'><span style='background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.3);color:var(--gold-bright);padding:0.35rem 0.75rem;border-radius:999px;font-size:0.78rem;'><i class='fa-solid fa-user'></i> Username: <strong>committee</strong></span><span style='background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);color:#38BDF8;padding:0.35rem 0.75rem;border-radius:999px;font-size:0.78rem;'><i class='fa-solid fa-key'></i> Password: <strong>Enppi2026!</strong> <button type='button' onclick='navigator.clipboard.writeText(\"Enppi2026!\");showToast(\"Password copied!\")' style='margin-left:0.35rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#FFFFFF;padding:0.15rem 0.5rem;border-radius:999px;font-size:0.72rem;cursor:pointer;'>Copy</button></span><span style='color:var(--text-muted);font-size:0.76rem;'><i class='fa-solid fa-eye'></i> Password shown intentionally for demo</span></div>
-                <form id='committeeLoginForm' onsubmit='return handleCommitteeLogin(event)' style='display:flex;gap:0.65rem;flex-wrap:wrap;align-items:center;'><input type='text' id='committeeUser' class='form-input' placeholder='Username' value='committee' required style='max-width:180px;'><input type='password' id='committeePass' class='form-input' placeholder='Password' value='Enppi2026!' required style='max-width:180px;'><button type='submit' class='btn-primary-gold'><i class='fa-solid fa-right-to-bracket'></i> Enter Workspace</button><button type='button' class='btn-outline-gold' onclick='var p=document.getElementById(\"committeePass\");p.type=p.type===\"password\"?\"text\":\"password\"'>Show/Hide</button></form>
-                <small style='color:var(--text-muted);font-size:0.76rem;display:block;margin-top:0.5rem;'><i class='fa-solid fa-circle-info'></i> Production connects to SSO/LDAP. Demo: <strong>committee / Enppi2026!</strong> unlocks the workspace.</small>
+            <div id='committeeLoginGate' style='background: rgba(14, 40, 73, 0.85); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; padding: 1.75rem; margin-bottom: 1.75rem; box-shadow: 0 10px 30px rgba(0,0,0,0.4);'>
+                <div style='display:flex; gap:1rem; align-items:center; margin-bottom:1.25rem;'>
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(212, 175, 55, 0.15); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(212, 175, 55, 0.35);">
+                        <i class='fa-solid fa-scale-balanced' style='font-size:1.6rem; color:var(--gold-bright);'></i>
+                    </div>
+                    <div>
+                        <h3 style='margin:0; color:#FFFFFF; font-size: 1.25rem; font-weight: 800;' data-i18n="committeeGateTitle">Evaluation Committee — Secure Access Gate</h3>
+                        <p style='margin:0.25rem 0 0 0; color:var(--text-muted); font-size:0.86rem;' data-i18n="committeeGateSubtitle">Demonstration authentication gate. Official credentials provided below for immediate demo entry.</p>
+                    </div>
+                </div>
+
+                <div style='display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.25rem;'>
+                    <span style='background:rgba(212,175,55,0.15); border:1px solid rgba(212,175,55,0.35); color:var(--gold-bright); padding:0.4rem 0.85rem; border-radius:999px; font-size:0.8rem;'>
+                        <i class='fa-solid fa-user'></i> Username: <strong>committee</strong>
+                    </span>
+                    <span style='background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); color:#38BDF8; padding:0.4rem 0.85rem; border-radius:999px; font-size:0.8rem;'>
+                        <i class='fa-solid fa-key'></i> Password: <strong>Enppi2026!</strong>
+                        <button type='button' onclick='navigator.clipboard.writeText("Enppi2026!");showToast("Password copied!")' style='margin-left:0.45rem; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#FFFFFF; padding:0.15rem 0.5rem; border-radius:999px; font-size:0.72rem; cursor:pointer;'>Copy</button>
+                    </span>
+                    <span style='color:var(--text-muted); font-size:0.78rem; display: inline-flex; align-items: center; gap: 0.35rem;'>
+                        <i class='fa-solid fa-eye'></i> Credentials shown intentionally for live demonstration
+                    </span>
+                </div>
+
+                <form id='committeeLoginForm' onsubmit='return handleCommitteeLogin(event)' style='display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;'>
+                    <input type='text' id='committeeUser' class='form-input' placeholder='Username' value='committee' required style='max-width:200px;'>
+                    <input type='password' id='committeePass' class='form-input' placeholder='Password' value='Enppi2026!' required style='max-width:200px;'>
+                    <button type='button' class='btn-outline-gold' onclick='var p=document.getElementById("committeePass");p.type=p.type==="password"?"text":"password"' title="Show / Hide Password" style="padding: 0.55rem 0.85rem;">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <button type='submit' id='btnSubmitCommitteeLogin' class='btn-primary-gold' style='padding:0.6rem 1.4rem; font-weight:800; display: inline-flex; align-items: center; gap: 0.5rem;'>
+                        <i class='fa-solid fa-right-to-bracket'></i> <span data-i18n="btnEnterCommittee">Enter Committee Workspace</span>
+                    </button>
+                </form>
+                <small style='color:var(--text-muted); font-size:0.76rem; display:block; margin-top:0.65rem;'>
+                    <i class='fa-solid fa-shield-halved'></i> Enterprise mode connects to Ministry / ENPPI Active Directory & SSO. Demo mode unlocks on click.
+                </small>
             </div>
+
             <div id='committeeWorkspace' style='display:none;'>
+                <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 10px; padding: 0.65rem 1.15rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 0.65rem; color: #34D399; font-size: 0.88rem; font-weight: 700;">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span data-i18n="committeeSessionActive">Authenticated Session: Evaluation Committee Lead (ENPPI Knowledge Center)</span>
+                    </div>
+                    <button type="button" onclick="handleCommitteeLogout()" class="btn-outline-gold" style="padding: 0.3rem 0.85rem; font-size: 0.76rem; color: #FCA5A5; border-color: rgba(239,68,68,0.45); display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> <span data-i18n="btnLockSession">Lock / Log Out</span>
+                    </button>
+                </div>
             <div class="section-header">
                 <span class="section-badge"><i class="fa-solid fa-gavel"></i> <span data-i18n="screeningBadge">Evaluation Committee</span></span>
                 <h3 class="section-title"><span data-i18n="screeningTitle">Applicant Screening, Objective Video Review & Live Presentation Evaluation</span></h3>
@@ -765,7 +807,7 @@
                             <div style="display: flex; align-items: center; gap: 0.6rem;">
                                 <button type="button" id="btnQuickFillDemoApp" style="background: rgba(212, 175, 55, 0.15); border: 1px solid var(--gold-bright); color: var(--gold-bright); padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem;">
                                     <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                    <span data-i18n="btnQuickFillDemoAppText">ØªØ¹Ø¨Ø¦Ø© Ù†Ù…ÙˆØ°Ø¬ Ù…ØªÙ‚Ø¯Ù… Ù„Ù„Ø§Ø®ØªØ¨Ø§Ø± Ø§Ù„Ø³Ø±ÙŠØ¹</span>
+                                    <span data-i18n="btnQuickFillDemoAppText">تعبئة نموذج متقدم للاختبار السريع</span>
                                 </button>
                                 <span style="font-size: 0.76rem; color: var(--gold-bright); font-weight: 600;" data-i18n="regFormSourceBadge">Official Form: Trainer Registration</span>
                             </div>
@@ -1254,24 +1296,36 @@
             <!-- Dynamic Trainer Cards Grid -->
             <div class="experts-grid" id="expertsGrid">
                 <!-- Populated dynamically via app.js -->
-            </div>
-        </section>
+            <!-- ============================================================
+                 ROI CALCULATOR (PLACED UNDER APPROVED TRAINERS DIRECTORY)
+                 ============================================================ -->
+            <div id="roiCalculatorSection" class="roi-calculator-section" style="margin-top: 3.5rem; border-top: 1px solid rgba(212, 175, 55, 0.35); padding-top: 2.5rem;">
+                <div class="section-header" style="margin-bottom: 1.5rem;">
+                    <span class="section-badge" style="background: rgba(212, 175, 55, 0.15); border-color: rgba(212, 175, 55, 0.4); color: var(--gold-bright);">
+                        <i class="fa-solid fa-chart-line"></i> <span data-i18n="roiBadge">Economic Feasibility & ROI</span>
+                    </span>
+                    <h3 class="section-title"><span data-i18n="roiTitle">Course Price Comparison & ROI Calculator</span></h3>
+                    <p class="section-desc" data-i18n="roiDesc">Compare external vs. in-house trainer daily rates by specialty, days, and annual volume. Direct cost reduction and foreign currency retention for the petroleum sector.</p>
+                </div>
 
-
-        <section id='adminView' class='view-section'>
-            <div class='section-header'><span class='section-badge' style='background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.35);color:#FCA5A5;'><i class='fa-solid fa-lock'></i> Admin Only</span><h3 class='section-title'>Course Price Comparison & ROI Calculator</h3><p class='section-desc'>Compare external vs. in-house trainer daily rates by specialty, days, and annual volume. Admin view — moved from Executive per demo scope.</p></div>
-<div class="roi-calculator-section">
                 <div class="roi-card">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-                        <div class="section-header" style="margin-bottom: 0;">
-                            <span class="section-badge"><i class="fa-solid fa-chart-line"></i> <span data-i18n="roiBadge">ROI</span></span>
-                            <h3 class="section-title"><span data-i18n="roiTitle">Course Price Comparison & ROI Calculator</span></h3>
-                            <p class="section-desc" data-i18n="roiDesc">Comparing course prices across specialties based on average daily trainer costs for external providers versus in-house sector trainers after project implementation and operational rollout.</p>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span style="font-weight: 700; color: #FFFFFF; font-size: 0.95rem;">
+                                <i class="fa-solid fa-sliders" style="color: var(--gold-bright);"></i>
+                                <span data-i18n="roiInteractiveParams">Interactive Simulation Parameters</span>
+                            </span>
                         </div>
-                        <button type="button" id="btnClearRoiInputs" class="btn-outline-gold" style="padding: 0.45rem 0.95rem; font-size: 0.78rem;">
-                            <i class="fa-solid fa-rotate-left"></i>
-                            <span data-i18n="btnClearRoi">Clear Numbers</span>
-                        </button>
+                        <div style="display: flex; gap: 0.55rem; flex-wrap: wrap;">
+                            <button type="button" id="btnFillDemoRoi" class="btn-primary-gold" style="padding: 0.45rem 0.95rem; font-size: 0.78rem;" onclick="fillDemoRoiBenchmark()">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span data-i18n="btnFillDemoRoi">Load Demo Benchmark Figures</span>
+                            </button>
+                            <button type="button" id="btnClearRoiInputs" class="btn-outline-gold" style="padding: 0.45rem 0.95rem; font-size: 0.78rem;">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span data-i18n="btnClearRoi">Clear Numbers</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="roi-grid">
@@ -1291,7 +1345,7 @@
                             <div class="slider-item">
                                 <div class="slider-label-wrap">
                                     <span class="slider-label" data-i18n="roiDaysLabel">Average Course Duration (Days)</span>
-                                    <span class="slider-current-val" id="roiDaysDisplay">â€”</span>
+                                    <span class="slider-current-val" id="roiDaysDisplay">—</span>
                                 </div>
                                 <input type="number" class="form-input" id="roiCourseDays" min="1" max="60" step="1" value="" placeholder="Enter average course duration in days (e.g., 5)">
                             </div>
@@ -1300,7 +1354,7 @@
                             <div class="slider-item">
                                 <div class="slider-label-wrap">
                                     <span class="slider-label" data-i18n="sliderForeignCostLabel">Average External Trainer Daily Rate (USD / Day)</span>
-                                    <span class="slider-current-val" id="foreignCostDisplay">â€”</span>
+                                    <span class="slider-current-val" id="foreignCostDisplay">—</span>
                                 </div>
                                 <input type="number" class="form-input" id="foreignCostSlider" min="100" max="50000" step="50" value="" placeholder="Enter external trainer daily rate in USD (e.g., 3000)">
                             </div>
@@ -1309,7 +1363,7 @@
                             <div class="slider-item">
                                 <div class="slider-label-wrap">
                                     <span class="slider-label" data-i18n="sliderNationalCostLabel">Average In-House Sector Trainer Daily Rate (USD / Day)</span>
-                                    <span class="slider-current-val" id="nationalCostDisplay">â€”</span>
+                                    <span class="slider-current-val" id="nationalCostDisplay">—</span>
                                 </div>
                                 <input type="number" class="form-input" id="nationalCostSlider" min="50" max="25000" step="25" value="" placeholder="Enter internal trainer daily rate in USD (e.g., 500)">
                             </div>
@@ -1318,7 +1372,7 @@
                             <div class="slider-item">
                                 <div class="slider-label-wrap">
                                     <span class="slider-label" data-i18n="sliderCoursesLabel">Number of Courses Delivered per Year (After Rollout)</span>
-                                    <span class="slider-current-val" id="coursesCountDisplay">â€”</span>
+                                    <span class="slider-current-val" id="coursesCountDisplay">—</span>
                                 </div>
                                 <input type="number" class="form-input" id="coursesSlider" min="1" max="2000" step="1" value="" placeholder="Enter number of courses per year (e.g., 100)">
                             </div>
@@ -1327,7 +1381,7 @@
                             <div class="slider-item">
                                 <div class="slider-label-wrap">
                                     <span class="slider-label" data-i18n="sliderEgpRateLabel">Exchange Rate (USD to EGP)</span>
-                                    <span class="slider-current-val" id="egpRateDisplay">â€”</span>
+                                    <span class="slider-current-val" id="egpRateDisplay">—</span>
                                 </div>
                                 <input type="number" class="form-input" id="egpRateSlider" min="1" max="200" step="0.1" value="" placeholder="Enter USD to EGP exchange rate (e.g., 50)">
                             </div>
@@ -1336,7 +1390,7 @@
                         <div class="roi-metrics-summary" id="roiMetricsSummaryBox" style="opacity: 0.55; transition: all 0.3s ease;">
                             <div id="roiStatusBanner" style="background: rgba(212, 175, 55, 0.12); border: 1px dashed rgba(212, 175, 55, 0.45); color: var(--gold-bright); padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem;">
                                 <i class="fa-solid fa-keyboard"></i>
-                                <span id="roiStatusBannerText" data-i18n="roiAwaitingInput">Enter numbers in the fields below to calculate course price comparison and ROI</span>
+                                <span id="roiStatusBannerText" data-i18n="roiAwaitingInput">Enter numbers in the fields below or click 'Load Demo Benchmark Figures'</span>
                             </div>
 
                             <!-- Single Course Price Comparison Card -->
@@ -1346,43 +1400,42 @@
                                 <div class="roi-comparison-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem;">
                                     <div class="roi-comparison-mini-card external" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 8px; padding: 0.75rem;">
                                         <div class="roi-comparison-mini-title" style="font-size: 0.72rem; color: #FCA5A5; font-weight: 600;" data-i18n="roiExternalCoursePrice">Course Price (External Provider)</div>
-                                        <div class="roi-comparison-mini-val" id="singleCourseExternalDisplay" style="font-size: 1.25rem; font-weight: 800; color: #FCA5A5;">â€”</div>
-                                        <small id="singleCourseExternalFormula" style="display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem;">Days Ã— External Rate</small>
+                                        <div class="roi-comparison-mini-val" id="singleCourseExternalDisplay" style="font-size: 1.25rem; font-weight: 800; color: #FCA5A5;">—</div>
+                                        <small id="singleCourseExternalFormula" style="display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem;">Days × External Rate</small>
                                     </div>
 
                                     <div class="roi-comparison-mini-card internal" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; padding: 0.75rem;">
                                         <div class="roi-comparison-mini-title" style="font-size: 0.72rem; color: #6EE7B7; font-weight: 600;" data-i18n="roiInternalCoursePrice">Course Price (In-House Sector Trainer)</div>
-                                        <div class="roi-comparison-mini-val" id="singleCourseInternalDisplay" style="font-size: 1.25rem; font-weight: 800; color: #6EE7B7;">â€”</div>
-                                        <small id="singleCourseInternalFormula" style="display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem;">Days Ã— Sector Rate</small>
+                                        <div class="roi-comparison-mini-val" id="singleCourseInternalDisplay" style="font-size: 1.25rem; font-weight: 800; color: #6EE7B7;">—</div>
+                                        <small id="singleCourseInternalFormula" style="display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem;">Days × Sector Rate</small>
                                     </div>
                                 </div>
 
                                 <div style="margin-top: 0.85rem; padding: 0.6rem 0.85rem; background: rgba(212, 175, 55, 0.12); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
                                     <span style="font-size: 0.8rem; color: var(--gold-bright); font-weight: 700;" data-i18n="roiCourseSavingsLabel">Net Savings per Course:</span>
-                                    <span id="singleCourseSavingsDisplay" style="font-size: 1.05rem; font-weight: 800; color: #FFFFFF;">â€”</span>
+                                    <span id="singleCourseSavingsDisplay" style="font-size: 1.05rem; font-weight: 800; color: #FFFFFF;">—</span>
                                 </div>
                             </div>
 
                             <!-- Total Annual Foreign Currency Saved (USD) -->
                             <div class="roi-result-box highlight" id="roiUsdBox">
                                 <div class="roi-result-label" data-i18n="roiNetUsdLabel">Total Annual Cost Savings (USD)</div>
-                                <div class="roi-result-value gold" id="netUsdSavedDisplay">â€”</div>
+                                <div class="roi-result-value gold" id="netUsdSavedDisplay">—</div>
                                 <div class="roi-result-sub"><i class="fa-solid fa-arrow-trend-up"></i> <span data-i18n="roiHardCurrencyRetained">Direct Retained Budget & Sector Value</span></div>
                             </div>
 
                             <!-- Total Annual Cost Savings (EGP) -->
                             <div class="roi-result-box" id="roiEgpBox">
                                 <div class="roi-result-label" data-i18n="roiNetEgpLabel">Total Annual Cost Savings (EGP)</div>
-                                <div class="roi-result-value" id="netEgpSavedDisplay">â€”</div>
-                                <div class="roi-result-sub" id="roiDynamicPaybackText" data-i18n="roiPaybackRatio">Training Cost Reduction Rate: â€”</div>
+                                <div class="roi-result-value" id="netEgpSavedDisplay">—</div>
+                                <div class="roi-result-sub" id="roiDynamicPaybackText" data-i18n="roiPaybackRatio">Training Cost Reduction Rate: —</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        
-
         </section>
+        <div id="adminView" style="display:none;"></div>
     </main>
 
     <!-- ==============================================================================
