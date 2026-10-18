@@ -1,0 +1,15 @@
+# Legacy unorganized development folder (superseded by demo/)
+EnppiXpertgate/
+
+# Operating System temporary files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Office lock files
+~$*
+
+# Node / Scratch
+node_modules/
+*.log
+scratch/

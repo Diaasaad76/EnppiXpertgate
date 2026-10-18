@@ -1,0 +1,9 @@
+# Ignore temporary and backup files
+*.bak
+*_tmp.*
+*_before_fix.*
+*_raw.*
+_matrix_dump.txt
+_roi_block.html
+.DS_Store
+Thumbs.db
