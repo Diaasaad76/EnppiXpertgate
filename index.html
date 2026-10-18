@@ -1,91 +1,1779 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ENPPI XpertGate — Petroleum Sector Trainers & Experts Pool</title>
-    <meta http-equiv="refresh" content="0; url=demo/index.html">
-    <link rel="icon" type="image/jpeg" href="demo/assets/Logo.jpeg">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background: radial-gradient(circle at top, #0A192F 0%, #030A16 100%);
-            color: #FFFFFF;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 1.5rem;
-            text-align: center;
-        }
-        .redirect-card {
-            background: rgba(10, 25, 47, 0.85);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 16px;
-            padding: 2.5rem 2rem;
-            max-width: 480px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-        .logo-img {
-            max-width: 140px;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-        }
-        h1 {
-            font-size: 1.4rem;
-            color: #D4AF37;
-            margin-bottom: 0.5rem;
-            letter-spacing: 0.5px;
-        }
-        p {
-            color: #94A3B8;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-        }
-        .btn-enter {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: linear-gradient(135deg, #D4AF37 0%, #AA820A 100%);
-            color: #030A16;
-            font-weight: 700;
-            text-decoration: none;
-            padding: 0.75rem 1.75rem;
-            border-radius: 999px;
-            font-size: 0.95rem;
-            transition: transform 0.2s;
-        }
-        .btn-enter:hover {
-            transform: scale(1.03);
-        }
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(212, 175, 55, 0.3);
-            border-radius: 50%;
-            border-top-color: #D4AF37;
-            animation: spin 0.8s linear infinite;
-            margin-bottom: 1rem;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
-    <script>
-        window.location.replace("demo/index.html");
-    </script>
+    <title>ENPPI XpertGate | Certified Trainers & Experts Portal</title>
+    
+    <!-- Fonts: Tajawal & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Enterprise Stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="redirect-card">
-        <img src="demo/assets/Logo.jpeg" alt="ENPPI Logo" class="logo-img">
-        <div class="spinner"></div>
-        <h1>ENPPI XpertGate</h1>
-        <p>Loading interactive portal for demonstration...</p>
-        <a href="demo/index.html" class="btn-enter">Enter Demo Now &rarr;</a>
+
+    <!-- ==============================================================================
+         EXECUTIVE APP HEADER & ROLE SWITCHER
+         ============================================================================== -->
+    <header class="app-header">
+        <div class="header-container">
+            <!-- Brand & Identity with Full Official Logo -->
+            <div class="brand-section">
+                <a href="#" class="brand-logo-full-wrap" onclick="switchRoleView('executiveView');return false;" title="Back to Main Page" style="cursor:pointer;text-decoration:none;">
+                    <img src="assets/logo_full.png?v=2" alt="Enppi XpertGate - Knowledge Transfer" class="brand-logo-full-img">
+                </a>
+            </div>
+
+            <!-- Executive Role Switcher -->
+            <nav class="role-switcher-container" role="tablist" aria-label="Navigation Tabs">
+                <!-- Executive Overview with Sub-Menu -->
+                <div class="nav-dropdown-wrapper" id="executiveNavDropdown">
+                    <button class="role-btn nav-dropdown-btn active" data-view="executiveView" role="tab" aria-selected="true" onclick="switchRoleView('executiveView')">
+                        <i class="fa-solid fa-crown"></i>
+                        <span data-i18n="navExecutive">Executive Overview</span>
+                        <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                    </button>
+                    <div class="nav-dropdown-menu align-start" id="executiveDropdownMenu">
+                        <a href="#" class="dropdown-item" onclick="navigateToExecutiveSection('execMissionVision');return false;">
+                            <i class="fa-solid fa-eye" style="color: #38BDF8; font-size: 1.1rem;"></i>
+                            <div>
+                                <strong data-i18n="navItemMissionVision">Mission & Vision</strong>
+                                <small data-i18n="navItemMissionVisionSub">Strategic Pillars & Industry Know-How</small>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="navigateToExecutiveSection('execProjectVideo');return false;">
+                            <i class="fa-solid fa-circle-play" style="color: var(--gold-bright); font-size: 1.1rem;"></i>
+                            <div>
+                                <strong data-i18n="navItemProjectVideo">Project Video</strong>
+                                <small data-i18n="navItemProjectVideoSub">120-Second Featured Pitch</small>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="navigateToExecutiveSection('execKeyIndicators');return false;">
+                            <i class="fa-solid fa-chart-line" style="color: #34D399; font-size: 1.1rem;"></i>
+                            <div>
+                                <strong data-i18n="navItemKeyIndicators">Key Indicators</strong>
+                                <small data-i18n="navItemKeyIndicatorsSub">Registration & Qualification KPIs</small>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="navigateToExecutiveSection('execProjectObjectives');return false;">
+                            <i class="fa-solid fa-bullseye" style="color: #F59E0B; font-size: 1.1rem;"></i>
+                            <div>
+                                <strong data-i18n="navItemObjectives">Project Objectives</strong>
+                                <small data-i18n="navItemObjectivesSub">The 6 Strategic Goals of XpertGate</small>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="navigateToExecutiveSection('execProjectWorkflow');return false;">
+                            <i class="fa-solid fa-diagram-project" style="color: #A78BFA; font-size: 1.1rem;"></i>
+                            <div>
+                                <strong data-i18n="navItemWorkflow">Project Workflow</strong>
+                                <small data-i18n="navItemWorkflowSub">5-Phase Implementation Plan</small>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="switchRoleView('applicantView');return false;">
+                            <i class="fa-solid fa-user-plus" style="color: var(--gold-bright); font-size: 1.1rem;"></i>
+                            <div>
+                                <strong data-i18n="navItemRegister">Register</strong>
+                                <small data-i18n="navItemRegisterSub">Trainer Intake & Self-Assessment</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <button class="role-btn" data-view="screeningView" role="tab" aria-selected="false" onclick="switchRoleView('screeningView')">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                    <span data-i18n="navScreening">Evaluation Committee</span>
+                </button>
+                <button class="role-btn" data-view="applicantView" role="tab" aria-selected="false" onclick="switchRoleView('applicantView')">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span data-i18n="navApplicant">Trainer Registration</span>
+                </button>
+                <!-- Approved Trainers Directory with Sub-Menu (ROI Sub-Item) -->
+                <div class="nav-dropdown-wrapper" id="trainersNavDropdown">
+                    <button class="role-btn nav-dropdown-btn" data-view="skillsBankView" role="tab" aria-selected="false" onclick="switchRoleView('skillsBankView', 'expertsGrid')">
+                        <i class="fa-solid fa-database"></i>
+                        <span data-i18n="navSkillsBank">Approved Trainers Directory</span>
+                        <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+                    </button>
+                    <div class="nav-dropdown-menu" id="trainersDropdownMenu">
+                        <a href="#" class="dropdown-item" onclick="switchRoleView('skillsBankView', 'expertsGrid');return false;">
+                            <i class="fa-solid fa-users-viewfinder" style="color: #38BDF8; font-size: 1.1rem;"></i>
+                            <div>
+                                <strong>Approved Trainers Pool</strong>
+                                <small>13 Specialized Petroleum Disciplines</small>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" onclick="switchRoleView('skillsBankView', 'roiCalculatorSection');return false;">
+                            <i class="fa-solid fa-chart-line" style="color: var(--gold-bright); font-size: 1.1rem;"></i>
+                            <div>
+                                <strong>Admin • ROI Calculator</strong>
+                                <small>Course Price Comparison & Feasibility</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Language & Operational Status -->
+            <div class="header-utilities">
+                <button type="button" class="promo-video-btn" id="btnHeaderPromoVideo" onclick="openPromoVideoModal()" title="Watch 2-Minute Project Video">
+                    <i class="fa-solid fa-play-circle"></i>
+                    <span data-i18n="btnPromoVideo">Watch Project Video (2 min)</span>
+                </button>
+                <button class="lang-toggle-btn" id="langToggleBtn" title="Switch Language">
+                    <i class="fa-solid fa-globe"></i>
+                    <span id="langLabel">Arabic (AR)</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==============================================================================
+         MAIN CONTENT CONTAINER (4 DYNAMIC VIEWS)
+         ============================================================================== -->
+    <main class="main-content">
+
+        <!-- ==========================================================================
+             VIEW 1: EXECUTIVE OVERVIEW
+             ========================================================================== -->
+        <section id="executiveView" class="view-section active">
+            <!-- Strategic Hero Banner -->
+            <div class="hero-banner" id="execMissionVision">
+                <h2 class="hero-title">
+                    <span data-i18n="heroTitleStart">Building Our Own</span>
+                    <span class="gradient-text" data-i18n="heroTitleHighlight">In-House Training Experts</span>
+                    <span data-i18n="heroTitleEnd">Across the Energy & Petroleum Sector</span>
+                </h2>
+
+                <p class="hero-vision-quote" data-i18n="visionQuote">
+                    "Building a trusted network of in-house petroleum experts and trainers to preserve industry know-how, develop future skills, and deliver practical training across the sector."
+                </p>
+
+                <!-- Strategic Pillars -->
+                <div class="strategic-pillars-grid">
+                    <div class="pillar-pill">
+                        <div class="icon"><i class="fa-solid fa-gem"></i></div>
+                        <h4 data-i18n="pillar1Title">Developing In-House Sector Trainers</h4>
+                        <p data-i18n="pillar1Desc">Meeting 70%+ of our specialized training needs using qualified experts from within petroleum sector companies.</p>
+                    </div>
+                    <div class="pillar-pill">
+                        <div class="icon"><i class="fa-solid fa-brain"></i></div>
+                        <h4 data-i18n="pillar2Title">Retaining Valuable Industry Experience</h4>
+                        <p data-i18n="pillar2Desc">Turning years of practical field experience into clear training courses, engaging both active staff (Group A) and retired experts (Group B).</p>
+                    </div>
+                </div>
+
+                <!-- Unified Featured Video Showcase (Centerpiece) -->
+                <div class="exec-video-centerpiece" id="execProjectVideo" style="margin-top: 1.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <span class="section-badge" style="margin-bottom: 0.35rem;"><i class="fa-solid fa-clapperboard"></i> <span>Featured Project Video</span></span>
+                            <h3 style="margin: 0.2rem 0; color: #FFFFFF; font-size: 1.25rem; font-weight: 800;">
+                                See XpertGate in 120 Seconds (Official Project Video)
+                            </h3>
+                            <p style="margin: 0; color: var(--text-muted); font-size: 0.85rem;">
+                                Real 2-minute pitch example + how candidate evaluation works across the petroleum sector.
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 0.65rem; flex-wrap: wrap; align-items: center;">
+                            <a href="video/sample-video.mp4" download="Enppi_XpertGate_Sample_Video.mp4" class="btn-outline-gold" style="font-size: 0.8rem; padding: 0.45rem 0.95rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.45rem;">
+                                <i class="fa-solid fa-download"></i> <span>Download Video (MP4)</span>
+                            </a>
+                            <button type="button" class="btn-primary-gold" onclick="openPromoVideoModal()" style="font-size: 0.8rem; padding: 0.45rem 1rem;">
+                                <i class="fa-solid fa-expand"></i> <span>Theater Mode</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Video Player -->
+                    <div class="exec-video-player-wrap">
+                        <video controls preload="metadata" poster="assets/Logo.jpeg" style="width: 100%; max-height: 440px; display: block; margin: 0 auto; background: #000;">
+                            <source src="video/sample-video.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+
+                    <!-- Ready to Join Placed Directly UNDER the Video -->
+                    <div class="ready-to-join-banner">
+                        <div style="flex: 1; min-width: 270px;">
+                            <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--gold-bright); font-weight: 800; font-size: 1.15rem; margin-bottom: 0.35rem;">
+                                <i class="fa-solid fa-rocket"></i>
+                                <span>Ready to Join ENPPI XpertGate?</span>
+                            </div>
+                            <p style="margin: 0; color: #E2E8F0; font-size: 0.88rem; line-height: 1.5;">
+                                Active petroleum staff (Group A) and retired industry consultants (Group B) welcome. Quick 2-minute registration.
+                            </p>
+                            <div style="display: flex; gap: 1.25rem; margin-top: 0.65rem; font-size: 0.78rem; color: var(--text-muted); flex-wrap: wrap;">
+                                <span><i class="fa-solid fa-shield-halved" style="color: var(--gold-bright);"></i> Bilingual Form</span>
+                                <span><i class="fa-solid fa-file-arrow-up" style="color: var(--gold-bright);"></i> CV & Video Upload</span>
+                                <span><i class="fa-solid fa-bolt-lightning" style="color: var(--gold-bright);"></i> Instant Gate 1 Score (1000 Pts)</span>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="button" class="btn-primary-gold" onclick="switchRoleView('applicantView')" style="padding: 0.85rem 1.6rem; font-size: 0.95rem; font-weight: 800; box-shadow: 0 4px 18px rgba(243, 186, 47, 0.35); display: inline-flex; align-items: center; gap: 0.6rem;">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>Register as In-House Trainer</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Executive KPI Summary Cards -->
+            <div class="section-header" id="execKeyIndicators">
+                <span class="section-badge"><i class="fa-solid fa-chart-line"></i> <span data-i18n="kpiBadge">Key Indicators</span></span>
+                <h3 class="section-title"><span data-i18n="kpiTitle">Registration & Qualification Summary</span></h3>
+            </div>
+            
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-label" data-i18n="kpiTotalApplicants">Total Registered Applicants</span>
+                        <div class="kpi-icon"><i class="fa-solid fa-users-viewfinder"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpiTotalApplicantsCount">0</div>
+                    <div class="kpi-subtext"><span class="positive" id="kpiCompaniesRatio">+100%</span> <span id="kpiCompaniesSubtext" data-i18n="kpiAcrossCompanies">across participating sector companies</span></div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-label" data-i18n="kpiScreenedCandidates">Passed Initial Review (â‰¥750 pts)</span>
+                        <div class="kpi-icon"><i class="fa-solid fa-filter-circle-dollar"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpiScreenedCount">0</div>
+                    <div class="kpi-subtext"><span class="positive" id="kpiPassRatePercent">0%</span> <span data-i18n="kpiPassRate">initial qualification rate</span></div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-label" data-i18n="kpiShortlisted">Selected for Live Presentation</span>
+                        <div class="kpi-icon"><i class="fa-solid fa-video"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpiShortlistedCount">0</div>
+                    <div class="kpi-subtext"><span class="positive" id="kpiDemoReadyRatio">0%</span> <span data-i18n="kpiBlindReviewed">approved after video review</span></div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-label" data-i18n="kpiCertifiedMasters">Master Trainers (â‰¥90%)</span>
+                        <div class="kpi-icon"><i class="fa-solid fa-award"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpiCertifiedMastersCount">0</div>
+                    <div class="kpi-subtext"><span class="positive" id="kpiMastersRatio">0%</span> <span data-i18n="kpiTop50Scholars">qualified for international TTT program</span></div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-label" data-i18n="kpiCohortDist">Applicant Groups (Active / Retired)</span>
+                        <div class="kpi-icon"><i class="fa-solid fa-people-arrows"></i></div>
+                    </div>
+                    <div class="kpi-value" style="font-size: 1.8rem;" id="kpiCohortCountDisplay">0A / 0B</div>
+                    <div class="kpi-subtext"><span class="positive" id="kpiCohortRatio">0% Active / 0% Retired</span></div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-label" data-i18n="kpiAverageTqi">Average Trainer Quality Rating (TQI)</span>
+                        <div class="kpi-icon"><i class="fa-solid fa-star"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpiAvgTqiDisplay">0.00</div>
+                    <div class="kpi-subtext"><span class="positive">Out of 5.0</span> <span data-i18n="kpiTqiEvaluated">based on trainee evaluations</span></div>
+                </div>
+            </div>
+
+            <!-- The 6 Strategic Goals Grid -->
+            <div class="section-header" id="execProjectObjectives">
+                <span class="section-badge"><i class="fa-solid fa-bullseye"></i> <span data-i18n="strategicGoalsBadge">Project Objectives</span></span>
+                <h3 class="section-title"><span data-i18n="strategicGoalsTitle">The 6 Main Goals of XpertGate</span></h3>
+            </div>
+            <div class="goals-grid">
+                <div class="goal-card">
+                    <div class="goal-number">Goal 01</div>
+                    <h4 data-i18n="goal1Title">Make the Best Use of Our Own Experts</h4>
+                    <p data-i18n="goal1Desc">Identify and qualify top professionals across petroleum companies to share knowledge and deliver training through the ENPPI Training Center.</p>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-number">Goal 02</div>
+                    <h4 data-i18n="goal2Title">Turn Field Experience into Practical Training</h4>
+                    <p data-i18n="goal2Desc">Close the gap between theory and real site work by turning technical standards and field lessons into practical training courses.</p>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-number">Goal 03</div>
+                    <h4 data-i18n="goal3Title">Keep Critical Knowledge Inside the Sector</h4>
+                    <p data-i18n="goal3Desc">Protect valuable company know-how from being lost to retirement by involving senior and retired experts in training younger staff.</p>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-number">Goal 04</div>
+                    <h4 data-i18n="goal4Title">Build an Approved Trainers Directory</h4>
+                    <p data-i18n="goal4Desc">Create one central, easy-to-use directory of certified trainers and consultants so all sector companies can find the right expert quickly.</p>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-number">Goal 05</div>
+                    <h4 data-i18n="goal5Title">Strengthen ENPPI's Role as a Training Leader</h4>
+                    <p data-i18n="goal5Desc">Support ENPPI's role as the Ministry's trusted engineering and training center for developing modern energy skills.</p>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-number">Goal 06</div>
+                    <h4 data-i18n="goal6Title">Reduce Training Costs</h4>
+                    <p data-i18n="goal6Desc">Rely less on costly foreign training providers and deliver timely training tailored to our operations.</p>
+                </div>
+            </div>
+
+            <!-- The Master Operational Workflow (Phases & Detailed Operational Stages) -->
+            <div class="workflow-section-container" id="execProjectWorkflow">
+                <div class="workflow-header-actions">
+                    <div class="section-header" style="margin-bottom: 0;">
+                        <span class="section-badge"><i class="fa-solid fa-diagram-project"></i> <span data-i18n="workflowBadge">Project Workflow</span></span>
+                        <h3 class="section-title"><span data-i18n="workflowTitle">Project Implementation Plan: 5 Main Phases</span></h3>
+                        <p class="section-desc" data-i18n="workflowDesc">Clear step-by-step plan showing the 5 project phases, key activities, expected results, and responsible teams.</p>
+                    </div>
+
+                    <div class="workflow-legend">
+                        <div class="workflow-legend-item">
+                            <span class="legend-dot completed"></span>
+                            <span data-i18n="legendCompleted">Completed</span>
+                        </div>
+                        <div class="workflow-legend-item">
+                            <span class="legend-dot active"></span>
+                            <span data-i18n="legendActive">In Progress</span>
+                        </div>
+                        <div class="workflow-legend-item">
+                            <span class="legend-dot upcoming"></span>
+                            <span data-i18n="legendUpcoming">Upcoming</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="workflow-track-wrapper" id="workflowTrackWrapper">
+                    <!-- Populated dynamically via app.js -->
+                </div>
+            </div>
+            </section>
+
+
+        <!-- ==========================================================================
+             VIEW 2: EVALUATION COMMITTEE ROOM
+             ========================================================================== -->
+        <section id='screeningView' class='view-section'>
+            <div id='committeeLoginGate' style='background: rgba(14, 40, 73, 0.85); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; padding: 1.75rem; margin-bottom: 1.75rem; box-shadow: 0 10px 30px rgba(0,0,0,0.4);'>
+                <div style='display:flex; gap:1rem; align-items:center; margin-bottom:1.25rem;'>
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(212, 175, 55, 0.15); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(212, 175, 55, 0.35);">
+                        <i class='fa-solid fa-scale-balanced' style='font-size:1.6rem; color:var(--gold-bright);'></i>
+                    </div>
+                    <div>
+                        <h3 style='margin:0; color:#FFFFFF; font-size: 1.25rem; font-weight: 800;' data-i18n="committeeGateTitle">Evaluation Committee — Secure Access Gate</h3>
+                        <p style='margin:0.25rem 0 0 0; color:var(--text-muted); font-size:0.86rem;' data-i18n="committeeGateSubtitle">Demonstration authentication gate. Official credentials provided below for immediate demo entry.</p>
+                    </div>
+                </div>
+
+                <div style='display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.25rem;'>
+                    <span style='background:rgba(212,175,55,0.15); border:1px solid rgba(212,175,55,0.35); color:var(--gold-bright); padding:0.4rem 0.85rem; border-radius:999px; font-size:0.8rem;'>
+                        <i class='fa-solid fa-user'></i> Username: <strong>committee</strong>
+                    </span>
+                    <span style='background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.35); color:#38BDF8; padding:0.4rem 0.85rem; border-radius:999px; font-size:0.8rem;'>
+                        <i class='fa-solid fa-key'></i> Password: <strong>Enppi2026!</strong>
+                        <button type='button' onclick='navigator.clipboard.writeText("Enppi2026!");showToast("Password copied!")' style='margin-left:0.45rem; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#FFFFFF; padding:0.15rem 0.5rem; border-radius:999px; font-size:0.72rem; cursor:pointer;'>Copy</button>
+                    </span>
+                    <span style='color:var(--text-muted); font-size:0.78rem; display: inline-flex; align-items: center; gap: 0.35rem;'>
+                        <i class='fa-solid fa-eye'></i> Credentials shown intentionally for live demonstration
+                    </span>
+                </div>
+
+                <form id='committeeLoginForm' onsubmit='return handleCommitteeLogin(event)' style='display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;'>
+                    <input type='text' id='committeeUser' class='form-input' placeholder='Username' value='committee' required style='max-width:200px;'>
+                    <input type='password' id='committeePass' class='form-input' placeholder='Password' value='Enppi2026!' required style='max-width:200px;'>
+                    <button type='button' class='btn-outline-gold' onclick='var p=document.getElementById("committeePass");p.type=p.type==="password"?"text":"password"' title="Show / Hide Password" style="padding: 0.55rem 0.85rem;">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <button type='submit' id='btnSubmitCommitteeLogin' class='btn-primary-gold' style='padding:0.6rem 1.4rem; font-weight:800; display: inline-flex; align-items: center; gap: 0.5rem;'>
+                        <i class='fa-solid fa-right-to-bracket'></i> <span data-i18n="btnEnterCommittee">Enter Committee Workspace</span>
+                    </button>
+                </form>
+                <small style='color:var(--text-muted); font-size:0.76rem; display:block; margin-top:0.65rem;'>
+                    <i class='fa-solid fa-shield-halved'></i> Enterprise mode connects to Ministry / ENPPI Active Directory & SSO. Demo mode unlocks on click.
+                </small>
+            </div>
+
+            <div id='committeeWorkspace' style='display:none;'>
+                <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 10px; padding: 0.65rem 1.15rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 0.65rem; color: #34D399; font-size: 0.88rem; font-weight: 700;">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span data-i18n="committeeSessionActive">Authenticated Session: Evaluation Committee Lead (ENPPI Knowledge Center)</span>
+                    </div>
+                    <button type="button" onclick="handleCommitteeLogout()" class="btn-outline-gold" style="padding: 0.3rem 0.85rem; font-size: 0.76rem; color: #FCA5A5; border-color: rgba(239,68,68,0.45); display: inline-flex; align-items: center; gap: 0.35rem;">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> <span data-i18n="btnLockSession">Lock / Log Out</span>
+                    </button>
+                </div>
+            <div class="section-header">
+                <span class="section-badge"><i class="fa-solid fa-gavel"></i> <span data-i18n="screeningBadge">Evaluation Committee</span></span>
+                <h3 class="section-title"><span data-i18n="screeningTitle">Applicant Screening, Objective Video Review & Live Presentation Evaluation</span></h3>
+                <p class="section-desc" data-i18n="screeningDesc">Review initial qualifications (Gate 1), evaluate the 2-minute intro video objectively, and score the live training presentation using the 19-point evaluation sheet.</p>
+            </div>
+
+            <!-- Automated Evaluation & Screening Action Toolbar -->
+            <div class="screening-action-bar" style="margin-bottom: 1.5rem; background: rgba(14, 40, 73, 0.7); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 12px; padding: 1.25rem 1.5rem;">
+                <div class="action-bar-info">
+                    <h3 style="color: var(--gold-bright); font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span data-i18n="evalDashboardTitle">Comprehensive Lecturer Evaluation & Accreditation Dashboard</span>
+                    </h3>
+                    <p data-i18n="evalDashboardDesc" style="color: var(--text-muted); font-size: 0.84rem; margin: 0;">Automated end-to-end evaluation results based on the 19 lecturer assessment criteria across Subject Knowledge (35%), Training Delivery (35%), Communication & Presence (30%), and approved deployment tiers.</p>
+                </div>
+                <div style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
+                    <div id="dbSyncStatusBadge" class="live-indicator" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); color: #10B981; padding: 0.4rem 0.85rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 700;">
+                        <span class="pulse-dot" style="background-color: #10B981; box-shadow: 0 0 8px #10B981;"></span>
+                        <span id="dbStatusText">System Status: Online (0 Applicants)</span>
+                    </div>
+
+                    <!-- End-to-End Automated Evaluation Button -->
+                    <button class="btn-primary-gold" id="btnRunAutoEvaluationAll" style="padding: 0.55rem 1.15rem; font-size: 0.84rem; box-shadow: 0 4px 15px rgba(243, 186, 47, 0.35);">
+                        <i class="fa-solid fa-bolt-lightning"></i>
+                        <span data-i18n="btnRunAutoEvalAll">Run End-to-End Evaluation for All Applicants</span>
+                    </button>
+
+                    <!-- Load & Evaluate Sector Sample Pool -->
+                    <button id="btnLoadBenchmarkCandidates" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.45); color: #38BDF8; padding: 0.55rem 1rem; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: 0.2s ease; display: inline-flex; align-items: center; gap: 0.45rem;">
+                        <i class="fa-solid fa-users-viewfinder"></i>
+                        <span data-i18n="btnLoadBenchmarkCandidates">Load & Evaluate Sector Sample Applicants (13 Disciplines)</span>
+                    </button>
+
+                    <button id="btnResetDatabase" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #FCA5A5; padding: 0.55rem 0.9rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s ease;">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span id="btnResetDbText" data-i18n="btnResetDbText">Clear All Applicants</span>
+                    </button>
+
+                    <!-- Standalone Rubric Button (Committee Criteria Reference) -->
+                    <button id="btnStandaloneRubric" style="background: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.45); color: var(--gold-bright); padding: 0.55rem 0.9rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.2s ease; display: inline-flex; align-items: center; gap: 0.45rem;" onclick="loadRubricCriteria()">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        <span id="rubricBtnText">Rubric</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- EXECUTIVE LECTURER ASSESSMENT DASHBOARD -->
+            <div class="lecturer-assessment-dashboard-container" style="background: linear-gradient(135deg, rgba(14, 40, 73, 0.85) 0%, rgba(5, 17, 36, 0.95) 100%); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 14px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 15px 35px rgba(0,0,0,0.35);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.85rem;">
+                    <div>
+                        <span class="section-badge" style="margin-bottom: 0.25rem;"><i class="fa-solid fa-chart-pie"></i> <span data-i18n="evalDashboardBadge">Lecturer Evaluation Dashboard</span></span>
+                        <h4 style="margin: 0.2rem 0 0 0; color: #FFFFFF; font-size: 1.15rem; font-weight: 800;">
+                            <span data-i18n="evalDashboardTitle">Comprehensive Lecturer Evaluation & Accreditation Dashboard</span>
+                        </h4>
+                    </div>
+                    <div id="evalEngineStatusBadge" style="background: rgba(212, 175, 55, 0.12); border: 1px solid rgba(212, 175, 55, 0.4); color: var(--gold-bright); padding: 0.35rem 0.85rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 0.4rem;">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span id="evalEngineStatusText">Automated Scoring Engine Active</span>
+                    </div>
+                </div>
+
+                <!-- 6 KPI Metric Cards Grid -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                    <!-- Total Evaluated -->
+                    <div class="eval-stat-card" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 1rem; text-align: center;">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;" data-i18n="dashTotalEvaluated">Total Evaluated Lecturers</div>
+                        <div id="dashTotalCount" style="font-size: 2rem; font-weight: 900; color: #FFFFFF; margin-top: 0.25rem;">0</div>
+                        <small style="color: var(--text-muted); font-size: 0.72rem;" id="dashTotalSubtitle">End-to-End Assessed</small>
+                    </div>
+
+                    <!-- Pass Rate -->
+                    <div class="eval-stat-card" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px; padding: 1rem; text-align: center;">
+                        <div style="font-size: 0.75rem; color: #6EE7B7; font-weight: 700; text-transform: uppercase;" data-i18n="dashPassRate">Accreditation Pass Rate (â‰¥ 70%)</div>
+                        <div id="dashPassRateVal" style="font-size: 2rem; font-weight: 900; color: #10B981; margin-top: 0.25rem;">0%</div>
+                        <small style="color: var(--text-muted); font-size: 0.72rem;" id="dashPassSubtitle">Accredited Trainers</small>
+                    </div>
+
+                    <!-- Average Score -->
+                    <div class="eval-stat-card" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 10px; padding: 1rem; text-align: center;">
+                        <div style="font-size: 0.75rem; color: var(--gold-bright); font-weight: 700; text-transform: uppercase;" data-i18n="dashAvgScore">Average Evaluation Score</div>
+                        <div id="dashAvgScoreVal" style="font-size: 2rem; font-weight: 900; color: var(--gold-bright); margin-top: 0.25rem;">0.0%</div>
+                        <small style="color: var(--text-muted); font-size: 0.72rem;">Out of 100%</small>
+                    </div>
+
+                    <!-- Master Star -->
+                    <div class="eval-stat-card" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 10px; padding: 1rem; text-align: center;">
+                        <div style="font-size: 0.75rem; color: var(--gold-bright); font-weight: 700; text-transform: uppercase;" data-i18n="dashMasterCount">Master Star (â‰¥ 90%)</div>
+                        <div id="dashMasterCountVal" style="font-size: 2rem; font-weight: 900; color: var(--gold-bright); margin-top: 0.25rem;">0</div>
+                        <small style="color: var(--text-muted); font-size: 0.72rem;">Senior Advisors</small>
+                    </div>
+
+                    <!-- Senior Trainer -->
+                    <div class="eval-stat-card" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 1rem; text-align: center;">
+                        <div style="font-size: 0.75rem; color: #38BDF8; font-weight: 700; text-transform: uppercase;" data-i18n="dashSeniorCount">Senior Trainers (80 - 89%)</div>
+                        <div id="dashSeniorCountVal" style="font-size: 2rem; font-weight: 900; color: #38BDF8; margin-top: 0.25rem;">0</div>
+                        <small style="color: var(--text-muted); font-size: 0.72rem;">Certified Facilitators</small>
+                    </div>
+
+                    <!-- Associate Trainer -->
+                    <div class="eval-stat-card" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 1rem; text-align: center;">
+                        <div style="font-size: 0.75rem; color: #34D399; font-weight: 700; text-transform: uppercase;" data-i18n="dashAssociateCount">Associate Trainers (70 - 79%)</div>
+                        <div id="dashAssociateCountVal" style="font-size: 2rem; font-weight: 900; color: #34D399; margin-top: 0.25rem;">0</div>
+                        <small style="color: var(--text-muted); font-size: 0.72rem;">Operational Instructors</small>
+                    </div>
+                </div>
+
+                <!-- 3 Pillars Performance Breakdown Progress Bars -->
+                <div style="background: rgba(5, 17, 36, 0.65); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 1.25rem;">
+                    <div style="font-weight: 700; color: #E2E8F0; font-size: 0.88rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-layer-group" style="color: var(--gold-bright);"></i>
+                        <span>Average Score Breakdown across the 3 Evaluation Sections:</span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+                        <!-- Pillar 1 -->
+                        <div style="background: rgba(255,255,255,0.03); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #93C5FD;" data-i18n="dashPillar1Avg">Section 1: Subject Knowledge & Analytical Skills (35%)</span>
+                                <strong id="dashPillar1Val" style="color: #60A5FA; font-size: 0.95rem;">0.0% / 35.0%</strong>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 999px; overflow: hidden;">
+                                <div id="dashPillar1Bar" style="background: linear-gradient(90deg, #3B82F6, #60A5FA); width: 0%; height: 100%; transition: width 0.6s ease;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Pillar 2 -->
+                        <div style="background: rgba(255,255,255,0.03); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #FCD34D;" data-i18n="dashPillar2Avg">Section 2: Training Delivery & Course Organization (35%)</span>
+                                <strong id="dashPillar2Val" style="color: var(--gold-bright); font-size: 0.95rem;">0.0% / 35.0%</strong>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 999px; overflow: hidden;">
+                                <div id="dashPillar2Bar" style="background: var(--gold-gradient); width: 0%; height: 100%; transition: width 0.6s ease;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Pillar 3 -->
+                        <div style="background: rgba(255,255,255,0.03); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #6EE7B7;" data-i18n="dashPillar3Avg">Section 3: Communication & Professional Presence (30%)</span>
+                                <strong id="dashPillar3Val" style="color: #34D399; font-size: 0.95rem;">0.0% / 30.0%</strong>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 999px; overflow: hidden;">
+                                <div id="dashPillar3Bar" style="background: linear-gradient(90deg, #10B981, #34D399); width: 0%; height: 100%; transition: width 0.6s ease;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EVALUATED RESULTS TABLE SECTION -->
+            <div class="eval-results-table-wrapper" style="margin-bottom: 2.5rem;">
+                <!-- Filter Pills & Search Bar -->
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+                    <div>
+                        <h4 style="margin: 0; font-size: 1.15rem; color: #FFFFFF; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fa-solid fa-list-check" style="color: var(--gold-bright);"></i>
+                            <span data-i18n="evalResultsTableTitle">Approved Lecturer Assessment Results Table</span>
+                        </h4>
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.82rem; color: var(--text-muted);" data-i18n="evalResultsTableDesc">Review every applicant's Gate 1 score, 3-pillar performance, total evaluation percentage, accredited level, and approved deployment scope.</p>
+                    </div>
+
+                    <div style="display: flex; gap: 0.55rem; align-items: center; flex-wrap: wrap;">
+                        <!-- Filter Pills -->
+                        <div class="skills-filter-pills" id="evalTierFilterWrap" style="margin: 0;">
+                            <button type="button" class="filter-pill active" data-evaltier="all" data-i18n="filterAllTiers">All Levels</button>
+                            <button type="button" class="filter-pill" data-evaltier="master" data-i18n="filterMasterOnly">Master Star (â‰¥ 90%)</button>
+                            <button type="button" class="filter-pill" data-evaltier="senior" data-i18n="filterSeniorOnly">Senior (80 - 89%)</button>
+                            <button type="button" class="filter-pill" data-evaltier="associate" data-i18n="filterAssociateOnly">Associate (70 - 79%)</button>
+                            <button type="button" class="filter-pill" data-evaltier="deferred" data-i18n="filterDeferredOnly">Development (&lt; 70%)</button>
+                        </div>
+
+                        <!-- Live Search Input -->
+                        <div style="position: relative; min-width: 220px;">
+                            <i class="fa-solid fa-magnifying-glass" style="position: absolute; inset-inline-start: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem;"></i>
+                            <input type="text" id="evalTableSearchInput" class="form-input" style="padding-inline-start: 34px; padding-top: 0.45rem; padding-bottom: 0.45rem; font-size: 0.82rem; border-radius: 999px;" placeholder="Search lecturer, specialty, or company...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comprehensive Results Table -->
+                <div class="table-responsive" style="border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 12px; overflow: hidden; background: rgba(5, 17, 36, 0.7);">
+                    <table class="enterprise-table" id="screeningCandidatesTable" style="margin: 0; width: 100%;">
+                        <thead>
+                            <tr style="background: rgba(14, 40, 73, 0.85);">
+                                <th style="width: 75px; text-align: center;" data-i18n="thCode">ID Code</th>
+                                <th data-i18n="thCandidate">Lecturer / Applicant Name</th>
+                                <th data-i18n="thCompany">Company</th>
+                                <th data-i18n="thDomain">Training Specialty</th>
+                                <th style="text-align: center;" data-i18n="thGate1Score">Gate 1 Score</th>
+                                <th style="text-align: center;" data-i18n="thCognitiveScore">Knowledge (35%)</th>
+                                <th style="text-align: center;" data-i18n="thDeliveryScore">Delivery (35%)</th>
+                                <th style="text-align: center;" data-i18n="thPresenceScore">Presence (30%)</th>
+                                <th style="text-align: center;" data-i18n="thCompositeScore">Total (100%)</th>
+                                <th style="text-align: center;" data-i18n="thAccreditedDegree">Accredited Level / Degree</th>
+                                <th data-i18n="thDeploymentScope">Approved Deployment Scope</th>
+                                <th style="text-align: center; width: 120px;" data-i18n="thActions">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="screeningTableBody">
+                            <!-- Populated dynamically via app.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Committee Gate 1 Points Indicator & Breakdown (Displayed per Candidate after Submission) -->
+            <div class="self-assessment-widget" id="committeeGate1Widget" style="margin-top: 2rem; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+                    <div class="section-header" style="margin-bottom: 0;">
+                        <span class="section-badge"><i class="fa-solid fa-gauge-high"></i> <span data-i18n="selfCalcBadge">Instant Score</span></span>
+                        <h4 style="font-size: 1.3rem; font-weight: 800; color: #FFFFFF; margin-top: 0.35rem;" data-i18n="selfCalcTitle">Estimated Initial Review Score â€” Gate 1 (Out of 1000 Points)</h4>
+                        <p style="font-size: 0.82rem; color: var(--text-muted);" data-i18n="selfCalcDesc">Automatic calculation of your initial qualification score based on the details entered in your registration form.</p>
+                    </div>
+                    <div id="committeeGate1CandidateBadge" style="background: rgba(212, 175, 55, 0.12); border: 1px solid var(--gold-bright); color: var(--gold-bright); padding: 0.5rem 1rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700;">
+                        <i class="fa-solid fa-user-check"></i> <span id="committeeGate1CandidateName">Select or Register an Applicant</span>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 2rem; align-items: center;">
+                    <div class="gauge-container" style="margin: 0;">
+                        <div class="estimated-points-circle">
+                            <span class="pts" id="liveEstimatedPoints">0</span>
+                            <span class="max-pts">/ 1000 Pts</span>
+                        </div>
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-top: 0.75rem;" id="liveReadinessStatus">
+                            <i class="fa-solid fa-circle-info"></i> Waiting for Applicant Registration
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="criteria-breakdown-list" style="margin-bottom: 1rem;">
+                            <div class="criteria-breakdown-item">
+                                <span data-i18n="critExpPts">Years of Experience (40 pts/year, up to 600 pts)</span>
+                                <strong id="calcExpPts">0 pts</strong>
+                            </div>
+                            <div class="criteria-breakdown-item">
+                                <span data-i18n="critDegreePts">University Degree (Bachelor's 40 / Master's 70 / PhD 100)</span>
+                                <strong id="calcDegreePts">0 pts</strong>
+                            </div>
+                            <div class="criteria-breakdown-item">
+                                <span data-i18n="critExpertClassPts">Expert Level (Local 40 / Regional 70 / International 100)</span>
+                                <strong id="calcExpertClassPts">0 pts</strong>
+                            </div>
+                            <div class="criteria-breakdown-item">
+                                <span data-i18n="critCertPts">Professional Certificates (50 pts each, up to 100 pts)</span>
+                                <strong id="calcCertPts">0 pts</strong>
+                            </div>
+                            <div class="criteria-breakdown-item">
+                                <span data-i18n="critEnglishPts">English Language Level (40 / 70 / 100 pts)</span>
+                                <strong id="calcEnglishPts">0 pts</strong>
+                            </div>
+                        </div>
+
+                        <div style="background: rgba(5, 17, 36, 0.6); padding: 0.85rem 1rem; border-radius: var(--radius-md); font-size: 0.78rem; color: var(--text-muted); border: 1px dashed rgba(255, 255, 255, 0.1);">
+                            <i class="fa-solid fa-circle-info" style="color: var(--gold-bright);"></i>
+                            <span data-i18n="selfCalcNotice">Qualification Requirement: Applicants scoring 750 points or more (out of 1000) pass Gate 1 and move to the video review and live training presentation.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2-Minute Intro Video Evaluation -->
+            <div class="blind-reviewer-card" id="videoReviewerSection">
+                <div class="reviewer-header">
+                    <div>
+                        <h3 class="section-title" style="font-size: 1.35rem;">
+                            <i class="fa-solid fa-film" style="color: var(--gold-bright);"></i>
+                            <span data-i18n="blindVideoPitchTitle">2-Minute Intro Video Evaluation</span>
+                        </h3>
+                        <p class="section-desc" id="activeEvaluatingCandidateLabel">Currently Reviewing: None Selected</p>
+                    </div>
+
+                    <!-- Objective Review Mode Toggle Switch -->
+                    <div class="blind-mode-toggle">
+                        <span style="font-size: 0.85rem; font-weight: 700;" data-i18n="blindToggleLabel">Hide Applicant Identity (Unbiased Review)</span>
+                        <label class="switch">
+                            <input type="checkbox" id="blindModeCheckbox">
+                            <span class="slider-switch"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="video-eval-grid">
+                    <!-- Video Container + Active Download & 120s Cap -->
+                    <div>
+                        <div class="video-player-container">
+                            <video class="simulated-video" id="pitchVideoPlayer" controls poster="assets/Logo.jpeg">
+                                <source src="video/sample-video.mp4" type="video/mp4">
+                                Your browser does not support video tag.
+                            </video>
+                            <div class="blind-overlay-mask" id="blindOverlayMask">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <h4 data-i18n="blindMaskTitle">Unbiased Review Mode Active</h4>
+                                <p data-i18n="blindMaskDesc">Applicant name, photo, and company are hidden to ensure a fair and objective evaluation of the presentation.</p>
+                            </div>
+                        </div>
+
+                        <!-- Active Video Download & 120s Duration Bar -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.85rem; background: rgba(5, 17, 36, 0.75); padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.25);">
+                            <div style="font-size: 0.8rem; color: var(--gold-bright); font-weight: 700;">
+                                <i class="fa-solid fa-stopwatch"></i>
+                                <span data-i18n="lblVideoDurationLimit">Maximum Video Length: 120 Seconds (2 Minutes)</span>
+                            </div>
+                            <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                                <a id="btnDownloadPitchVideo" href="video/sample-video.mp4" download="Candidate_120s_Pitch.mp4" target="_blank" class="btn-primary-gold" style="padding: 0.4rem 0.9rem; font-size: 0.78rem; text-decoration: none;">
+                                    <i class="fa-solid fa-download"></i>
+                                    <span data-i18n="btnDownloadVideo">Download Video (120s)</span>
+                                </a>
+                                <a id="btnOpenExternalVideo" href="video/sample-video.mp4" target="_blank" rel="noopener" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38BDF8; padding: 0.4rem 0.9rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    <span data-i18n="btnOpenVideoLink">Open Video Link</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rapid Video Scoring Sheet -->
+                    <div class="eval-rubric-form">
+                        <div class="eval-criteria-item">
+                            <div class="eval-criteria-title">
+                                <span data-i18n="criteriaDemeanor">Professional Presence & Confidence</span>
+                                <span id="scoreDemeanorVal" style="color: var(--gold-bright);">10/10</span>
+                            </div>
+                            <div class="anchor-buttons" data-criteria="demeanor">
+                                <button class="anchor-btn selected" data-score="10" data-i18n="anchorMaster">Excellent (10 pts)</button>
+                                <button class="anchor-btn" data-score="8" data-i18n="anchorGood">Very Good (8 pts)</button>
+                                <button class="anchor-btn" data-score="6" data-i18n="anchorBase">Basic (6 pts)</button>
+                            </div>
+                        </div>
+
+                        <div class="eval-criteria-item">
+                            <div class="eval-criteria-title">
+                                <span data-i18n="criteriaClarity">Clarity of Explanation & Communication</span>
+                                <span id="scoreClarityVal" style="color: var(--gold-bright);">10/10</span>
+                            </div>
+                            <div class="anchor-buttons" data-criteria="clarity">
+                                <button class="anchor-btn selected" data-score="10" data-i18n="anchorMaster">Excellent (10 pts)</button>
+                                <button class="anchor-btn" data-score="8" data-i18n="anchorGood">Very Good (8 pts)</button>
+                                <button class="anchor-btn" data-score="6" data-i18n="anchorBase">Basic (6 pts)</button>
+                            </div>
+                        </div>
+
+                        <div class="eval-criteria-item">
+                            <div class="eval-criteria-title">
+                                <span data-i18n="criteriaBodyLang">Body Language & Passion for Training</span>
+                                <span id="scoreBodyLangVal" style="color: var(--gold-bright);">10/10</span>
+                            </div>
+                            <div class="anchor-buttons" data-criteria="bodyLang">
+                                <button class="anchor-btn selected" data-score="10" data-i18n="anchorMaster">Excellent (10 pts)</button>
+                                <button class="anchor-btn" data-score="8" data-i18n="anchorGood">Very Good (8 pts)</button>
+                                <button class="anchor-btn" data-score="6" data-i18n="anchorBase">Basic (6 pts)</button>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                            <button class="btn-primary-gold" id="btnAdvanceSimulation" style="flex: 1;">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span data-i18n="btnAdvance">Approve for Live Presentation</span>
+                            </button>
+                            <button class="btn-primary-gold" id="btnRegretCandidate" style="background: rgba(239, 68, 68, 0.2); color: #F87171; border: 1px solid #EF4444;">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                                <span data-i18n="btnRegret">Hold / Needs Development</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Official XpertGate Physical In-Person Assessment Sheet -->
+            <div class="simulation-rubric-card" id="officialMatrixSection">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="section-header" style="margin-bottom: 0;">
+                        <span class="section-badge"><i class="fa-solid fa-chalkboard-user"></i> <span data-i18n="demoRubricBadge">Physical In-Person Assessment & Live Demonstration</span></span>
+                        <h3 class="section-title"><span data-i18n="demoRubricTitle">Physical In-Person Trainer Assessment Sheet (100%)</span></h3>
+                        <p class="section-desc" data-i18n="demoRubricDesc">Comprehensive in-person committee evaluation based on the 3 established pillars: Knowledge (35%), Delivery (35%), and Presence (30%), determining the accredited degree and authorized deployment scope.</p>
+                    </div>
+
+                    <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+                        <a href="assets/competencies%20matrix.docx" download="ENPPI_XpertGate_Competencies_Matrix.docx" download class="btn-primary-gold" style="padding: 0.5rem 1rem; font-size: 0.78rem; text-decoration: none;">
+                            <i class="fa-solid fa-file-word"></i>
+                            <span data-i18n="btnDownloadMatrixDocx">Download Evaluation Guide (Word)</span>
+                        </a>
+                        <a href="assets/template%20to%20evaluate%20trainer.docx" download="ENPPI_Trainer_Evaluation_Template.docx" download style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38BDF8; padding: 0.5rem 1rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">
+                            <i class="fa-solid fa-file-arrow-down"></i>
+                            <span data-i18n="btnDownloadEvalSheetDocx">Download Physical Evaluation Sheet (Word)</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Candidate Registration Form Summary for Committee -->
+                <div id="committeeCandidateRegistrationSummary" style="margin-bottom: 1.75rem;">
+                    <!-- Populated dynamically via app.js when a candidate is selected/submitted -->
+                </div>
+
+                <!-- Dynamic 3-Section 19-Point Evaluation Tables -->
+                <div id="xpertgateCompetencyMatrixContainer">
+                    <!-- Populated dynamically via app.js from XPERTGATE_COMPETENCY_MATRIX -->
+                </div>
+
+                <!-- Mathematical Result & Dynamic Tier Allocation -->
+                <div class="simulation-calc-result" style="margin-top: 2rem;">
+                    <div>
+                        <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;" data-i18n="compositeScoreLabel">
+                            Total Evaluation Score (out of 100%):
+                        </div>
+                        <div class="composite-score-display">
+                            <span class="number" id="calcCompositeScore">80.0</span>
+                            <span class="unit">/ 100%</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;" id="calcPillarsSummaryText">
+                            Subject Knowledge (35%): 28.0% | Training Delivery (35%): 28.0% | Communication & Presence (30%): 24.0%
+                        </div>
+                    </div>
+
+                    <div class="tier-assignment-box">
+                        <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 0.35rem;" data-i18n="accreditedTierLabel">
+                            Approved Trainer Level:
+                        </div>
+                        <span class="tier-tag badge-senior" id="calcTierTag">Certified Senior Trainer</span>
+                        <div style="font-size: 0.82rem; color: var(--gold-bright); max-width: 440px;" id="calcAssignmentDesc">
+                            Approved for Advanced Specialized Courses, Technical Workshops & Coaching
+                        </div>
+                    </div>
+
+                    <button class="btn-primary-gold" id="btnSaveSimulationResult">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span data-i18n="btnSaveResult">Save Evaluation Decision</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        </section>
+
+
+        <!-- ==========================================================================
+             VIEW 3: TRAINER REGISTRATION FORM
+             ========================================================================== -->
+        <section id="applicantView" class="view-section">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                <div class="section-header" style="margin-bottom: 0;">
+                    <span class="section-badge"><i class="fa-solid fa-id-card"></i> <span data-i18n="intakeBadge">Trainer Application</span></span>
+                    <h3 class="section-title"><span data-i18n="intakeTitle">Official Trainer Registration Form</span></h3>
+                    <p class="section-desc" data-i18n="intakeDesc">Complete the registration fields below or download the Word template for your specialty.</p>
+                </div>
+                <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+                    <a href="assets/Template%20Form%20for%20Expert%20Registration.docx" download="Template_Form_for_Expert_Registration.docx" class="btn-primary-gold" style="padding: 0.55rem 1.1rem; font-size: 0.82rem; text-decoration: none;">
+                        <i class="fa-solid fa-file-word"></i>
+                        <span data-i18n="btnDownloadRegTemplate">Download Trainer Registration Form (Word)</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="applicant-split-layout">
+                <!-- Complete Registration Form matching assets/Template Form for Expert Registration.docx -->
+                <div class="glass-card gold-accent">
+                    <form id="applicantIntakeForm">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; padding: 0.75rem 1rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px;">
+                            <div style="font-size: 0.82rem; color: #FCA5A5; font-weight: 700;">
+                                <i class="fa-solid fa-asterisk"></i>
+                                <span data-i18n="mandatoryFieldsNotice">Fields marked with an asterisk (*) are required.</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.6rem;">
+                                <button type="button" id="btnQuickFillDemoApp" style="background: rgba(212, 175, 55, 0.15); border: 1px solid var(--gold-bright); color: var(--gold-bright); padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem;">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    <span data-i18n="btnQuickFillDemoAppText">تعبئة نموذج متقدم للاختبار السريع</span>
+                                </button>
+                                <span style="font-size: 0.76rem; color: var(--gold-bright); font-weight: 600;" data-i18n="regFormSourceBadge">Official Form: Trainer Registration</span>
+                            </div>
+                        </div>
+
+                        <!-- ============================================================
+                             SECTION 1: TRAINING AREA & SPECIALTY (PRIMARY SHOWCASE)
+                             ============================================================ -->
+                        <div class="reg-section-block featured-specialty-card" style="margin-bottom: 2rem; padding: 1.75rem; background: linear-gradient(135deg, rgba(14, 40, 73, 0.95) 0%, rgba(5, 17, 36, 0.98) 100%); border: 2px solid rgba(212, 175, 55, 0.45); border-radius: 16px; box-shadow: 0 12px 35px rgba(0,0,0,0.45);">
+                            <!-- Header Banner with Step Badge -->
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; border-bottom: 1px solid rgba(212, 175, 55, 0.25); padding-bottom: 1rem;">
+                                <div>
+                                    <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.45rem;">
+                                        <span class="section-badge" style="background: rgba(212, 175, 55, 0.18); border-color: rgba(212, 175, 55, 0.55); color: var(--gold-bright); font-size: 0.78rem; font-weight: 800; padding: 0.25rem 0.75rem;">
+                                            <i class="fa-solid fa-flag-checkered"></i> <span>START HERE • STEP 1</span>
+                                        </span>
+                                        <span style="font-size: 0.76rem; color: #38BDF8; font-weight: 700; background: rgba(56, 189, 248, 0.14); border: 1px solid rgba(56, 189, 248, 0.35); padding: 0.25rem 0.75rem; border-radius: 999px;">
+                                            <i class="fa-solid fa-list-check"></i> 13 Specialized Disciplines
+                                        </span>
+                                    </div>
+                                    <h3 style="color: #FFFFFF; font-size: 1.35rem; font-weight: 900; margin: 0 0 0.4rem 0; display: flex; align-items: center; gap: 0.65rem;">
+                                        <i class="fa-solid fa-layer-group" style="color: var(--gold-bright);"></i>
+                                        <span data-i18n="secSpecialtyTitle">1. Training Area & Specialty (Select a Specialty to View Details, Registration Form & Video Link)</span>
+                                    </h3>
+                                    <p style="margin: 0; color: #CBD5E1; font-size: 0.92rem; line-height: 1.6;">
+                                        Select your technical domain and focus specialty below to view the official curriculum requirements, download the Word registration package, and access the 2-minute introductory video link.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Dual Dropdown Selectors with Large Inputs and Visual Icons -->
+                            <div class="form-row" style="margin-bottom: 1.25rem;">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="font-size: 0.92rem; font-weight: 800; color: #FFFFFF; display: flex; align-items: center; gap: 0.45rem;" data-i18n="lblDomain">
+                                        <i class="fa-solid fa-oil-well" style="color: var(--gold-bright);"></i> Main Specialty Area (13 Specialties)
+                                    </label>
+                                    <select class="form-select specialty-select-large" id="appDomain" required>
+                                        <!-- Populated dynamically via app.js -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label mandatory" style="font-size: 0.92rem; font-weight: 800; color: #FFFFFF; display: flex; align-items: center; gap: 0.45rem;" data-i18n="lblSubDiscipline">
+                                        <i class="fa-solid fa-bullseye" style="color: #38BDF8;"></i> Specific Focus Area
+                                    </label>
+                                    <select class="form-select specialty-select-large" id="appSubDiscipline" required>
+                                        <!-- Populated dynamically based on Domain selection -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Specialty Details -->
+                            <div class="domain-interactive-dossier" id="domainInteractiveDossier">
+                                <!-- Populated dynamically via app.js upon selecting/clicking any domain or sub-discipline -->
+                            </div>
+                        </div>
+
+                        <!-- ============================================================
+                             SECTION 2: CONTACT DETAILS & CV UPLOAD (REQUIRED)
+                             ============================================================ -->
+                        <div class="reg-section-block" id="regFormFieldsAnchor" style="margin-bottom: 1.75rem; padding: 1.25rem; background: rgba(5, 17, 36, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md);">
+                            <h4 style="color: var(--gold-bright); font-size: 1rem; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-address-book"></i>
+                                <span data-i18n="secContactTitle">2. Contact Details & CV Upload</span>
+                            </h4>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" data-i18n="lblFullName">Full Name</label>
+                                    <input type="text" class="form-input" id="appFullName" placeholder="e.g., Eng. Tarek Mahmoud Hassan" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label mandatory" data-i18n="lblEmail">Business Email</label>
+                                    <input type="email" class="form-input" id="appEmail" placeholder="name@company.com.eg" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" data-i18n="lblPhone">Mobile Number</label>
+                                    <input type="tel" class="form-input" id="appPhone" placeholder="+20 100 000 0000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" data-i18n="lblLinkedIn">LinkedIn Profile Link</label>
+                                    <input type="url" class="form-input" id="appLinkedIn" placeholder="https://www.linkedin.com/in/your-profile">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group" style="grid-column: 1 / -1;">
+                                    <label class="form-label" data-i18n="lblWebsite">Professional Website or Portfolio</label>
+                                    <input type="url" class="form-input" id="appWebsite" placeholder="https://your-portfolio.com">
+                                </div>
+                            </div>
+
+                            <!-- PRIMARY MANDATORY CV / RESUME UPLOAD ITEM -->
+                            <div style="margin-top: 0.5rem; padding: 1rem 1.15rem; background: linear-gradient(135deg, rgba(212, 175, 55, 0.14), rgba(15, 23, 42, 0.85)); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 10px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                    <label class="form-label mandatory" style="margin-bottom: 0; font-size: 0.95rem; color: var(--gold-bright);" data-i18n="lblPrimaryCvUpload">
+                                        Upload CV / Resume (Required)
+                                    </label>
+                                    <span style="font-size: 0.75rem; background: rgba(239, 68, 68, 0.18); border: 1px solid rgba(239, 68, 68, 0.4); color: #FCA5A5; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 700;" data-i18n="lblPrimaryCvBadge">
+                                        Required Document *
+                                    </span>
+                                </div>
+                                <input type="file" class="form-input" id="appCvFile" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="padding: 0.6rem;" required>
+                                <input type="hidden" id="appCvUploadedUrl" value="">
+                                <small id="cvUploadStatus" style="display: block; margin-top: 0.4rem; color: var(--text-muted); font-size: 0.78rem;" data-i18n="lblPrimaryCvHint">
+                                    Accepted formats: PDF, DOC, DOCX. Your CV will be shared directly with the Evaluation Committee.
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- ============================================================
+                             SECTION 3: COMPANY, CAREER HISTORY & TRAINING AVAILABILITY
+                             ============================================================ -->
+                        <div class="reg-section-block" style="margin-bottom: 1.75rem; padding: 1.25rem; background: rgba(5, 17, 36, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md);">
+                            <h4 style="color: var(--gold-bright); font-size: 1rem; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-building-user"></i>
+                                <span data-i18n="secCareerTitle">3. Company, Career History & Training Availability</span>
+                            </h4>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" data-i18n="lblCompany">Company Name</label>
+                                    <input type="text" class="form-input" id="appCompany" placeholder="e.g., ENPPI, GASCO, GUPCO, Petrobel" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label mandatory" data-i18n="lblDepartment">Department / Division</label>
+                                    <input type="text" class="form-input" id="appDepartment" placeholder="e.g., Process Engineering / Drilling Operations / HR & Training" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" data-i18n="lblJobTitle">Current Job Title</label>
+                                    <input type="text" class="form-input" id="appJobTitle" placeholder="e.g., General Manager of Process Engineering / Lead Drilling Consultant" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label mandatory" data-i18n="lblDirectManager">Direct Manager</label>
+                                    <input type="text" class="form-input" id="appDirectManager" placeholder="e.g., Eng. Ahmed Mostafa — General Manager" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group" style="grid-column: 1 / -1;">
+                                    <label class="form-label mandatory" data-i18n="lblHrEmail">Company HR Department Email</label>
+                                    <input type="email" class="form-input" id="appHrEmail" placeholder="hr@company.com.eg" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label mandatory" data-i18n="lblCareerPositions">Key Positions Held During Your Career</label>
+                                <textarea class="form-input" id="appCareerPositions" rows="2" placeholder="List your main engineering, operational, management, and advisory roles..." required></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" data-i18n="lblCohort">Employment Status</label>
+                                    <select class="form-select" id="appCohort" required>
+                                        <option value="Cohort A" data-i18n="optCohortA">Group A: Currently Employed Professional</option>
+                                        <option value="Cohort B" data-i18n="optCohortB">Group B: Senior Consultant / Retired Expert</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label mandatory" data-i18n="lblAvailability">Availability for Training</label>
+                                    <select class="form-select" id="appAvailability" required>
+                                        <option value="Available" selected data-i18n="optAvailHigh">High (Flexible Schedule)</option>
+                                        <option value="Medium" data-i18n="optAvailMed">Medium (With Advance Notice)</option>
+                                        <option value="Low" data-i18n="optAvailLow">Limited (Selected Executive Sessions Only)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ============================================================
+                             SECTION 4: ACADEMIC EDUCATION
+                             ============================================================ -->
+                        <div class="reg-section-block" style="margin-bottom: 1.75rem; padding: 1.25rem; background: rgba(5, 17, 36, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md);">
+                            <h4 style="color: var(--gold-bright); font-size: 1rem; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                <span data-i18n="secAcademicTitle">4. Academic Education</span>
+                            </h4>
+
+                            <div class="form-row">
+                                <div class="form-group" style="grid-column: 1 / -1;">
+                                    <label class="form-label mandatory" data-i18n="lblDegree">Highest Academic Degree</label>
+                                    <select class="form-select" id="appDegree" required>
+                                        <option value="PhD" data-i18n="optDegreePhd">Doctorate / PhD in Specialty (100 pts)</option>
+                                        <option value="Master" data-i18n="optDegreeMaster">Master's Degree MSc / MBA (70 pts)</option>
+                                        <option value="Bachelor" selected data-i18n="optDegreeBachelor">Bachelor's Degree in Specialty (40 pts - Required Minimum)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 4.1 Bachelor's Degree -->
+                            <div style="margin-bottom: 0.85rem; padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                                <div style="font-size: 0.82rem; font-weight: 700; color: #FFFFFF; margin-bottom: 0.5rem;" data-i18n="lblBscRowTitle">Bachelor's Degree (Required *)</div>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+                                    <input type="text" class="form-input" id="bscField" placeholder="Major / Specialty (e.g., Chemical Engineering)" required>
+                                    <input type="text" class="form-input" id="bscUniversity" placeholder="University (e.g., Cairo University)" required>
+                                    <input type="number" class="form-input" id="bscYear" placeholder="Graduation Year (e.g., 2008)" min="1965" max="2026" required>
+                                </div>
+                            </div>
+
+                            <!-- 4.2 Master's Degree -->
+                            <div style="margin-bottom: 0.85rem; padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.5rem;" data-i18n="lblMscRowTitle">Master's Degree (MSc / MBA â€” If Applicable)</div>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+                                    <input type="text" class="form-input" id="mscField" placeholder="Major / Specialty">
+                                    <input type="text" class="form-input" id="mscUniversity" placeholder="University">
+                                    <input type="number" class="form-input" id="mscYear" placeholder="Graduation Year" min="1970" max="2026">
+                                </div>
+                            </div>
+
+                            <!-- 4.3 Doctorate / PhD -->
+                            <div style="padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.5rem;" data-i18n="lblPhdRowTitle">Doctorate / PhD (If Applicable)</div>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+                                    <input type="text" class="form-input" id="phdField" placeholder="Major / Specialty">
+                                    <input type="text" class="form-input" id="phdUniversity" placeholder="University">
+                                    <input type="number" class="form-input" id="phdYear" placeholder="Graduation Year" min="1975" max="2026">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ============================================================
+                             SECTION 5: PROFESSIONAL & INTERNATIONAL CERTIFICATIONS
+                             ============================================================ -->
+                        <div class="reg-section-block" style="margin-bottom: 1.75rem; padding: 1.25rem; background: rgba(5, 17, 36, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.65rem; flex-wrap: wrap; gap: 0.5rem;">
+                                <h4 style="color: var(--gold-bright); font-size: 1rem; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fa-solid fa-certificate"></i>
+                                    <span data-i18n="secCertsTitle">5. Professional & International Certifications</span>
+                                </h4>
+                                <span style="font-size: 0.75rem; color: var(--gold-bright);" id="disciplineCertNotice" data-i18n="lblCertSuggestedNotice">Suggested based on your selected specialty (50 pts per certificate, up to 100 pts)</span>
+                            </div>
+
+                            <label class="form-label mandatory" data-i18n="lblCertifications">Select Recognized Certifications in Your Specialty</label>
+                            <div class="cert-checkbox-group" id="disciplineCertContainer" style="margin-bottom: 1rem;">
+                                <!-- Populated dynamically based on selected Petroleum Domain -->
+                            </div>
+
+                            <!-- 5.1 Professional Certifications -->
+                            <div style="margin-bottom: 0.85rem; padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                                <div style="font-size: 0.82rem; font-weight: 700; color: #FFFFFF; margin-bottom: 0.5rem;" data-i18n="lblProfCertRow">1. Professional Certifications (At Least Two Recommended)</div>
+                                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.75rem;">
+                                    <input type="text" class="form-input" id="appCustomCert" placeholder="Certificate Names & Specialty (e.g., PMP, API 570)">
+                                    <input type="text" class="form-input" id="profCertYear" placeholder="Year(s) Earned (e.g., 2019, 2022)">
+                                </div>
+                            </div>
+
+                            <!-- 5.2 Specialized International Certifications -->
+                            <div style="margin-bottom: 0.85rem; padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.5rem;" data-i18n="lblIntlCertRow">2. Specialized International Certifications</div>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+                                    <input type="text" class="form-input" id="intlCertArea" placeholder="Specialty & Certificate Name">
+                                    <input type="text" class="form-input" id="intlCertInst" placeholder="Issuing Organization (e.g., IWCF, NEBOSH, ASME)">
+                                    <input type="number" class="form-input" id="intlCertYear" placeholder="Year Earned" min="1980" max="2026">
+                                </div>
+                            </div>
+
+                            <!-- 5.3 Advanced Technical Certifications in the Oil & Gas Sector -->
+                            <div style="padding: 0.75rem; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.5rem;" data-i18n="lblSophCertRow">3. Advanced Technical Certifications in the Oil & Gas Sector</div>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem;">
+                                    <input type="text" class="form-input" id="sophCertArea" placeholder="Specialty & Technical Certificate">
+                                    <input type="text" class="form-input" id="sophCertInst" placeholder="Issuing Organization (e.g., SPE, API, AMPP)">
+                                    <input type="number" class="form-input" id="sophCertYear" placeholder="Year Earned" min="1980" max="2026">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ============================================================
+                             SECTION 6: TRAINER LEVEL, EXPERIENCE & ENGLISH PROFICIENCY
+                             ============================================================ -->
+                        <div class="reg-section-block" style="margin-bottom: 1.75rem; padding: 1.25rem; background: rgba(5, 17, 36, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md);">
+                            <h4 style="color: var(--gold-bright); font-size: 1rem; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-award"></i>
+                                <span data-i18n="secExpertTypeTitle">6. Trainer Level, Years of Experience & Language Skills</span>
+                            </h4>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label mandatory" data-i18n="lblExpertClassification">Trainer Experience Level</label>
+                                    <select class="form-select" id="appExpertClassification" required>
+                                        <option value="local" selected data-i18n="optExpertLoc">Local Trainer: At least two appreciation letters (40 pts)</option>
+                                        <option value="regional" data-i18n="optExpertReg">Regional Trainer: Delivered 2+ courses with appreciation outside Egypt (70 pts)</option>
+                                        <option value="international" data-i18n="optExpertInt">Senior Advisor / International Trainer (100 pts)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label mandatory" data-i18n="lblExpYears">Years of Practical Experience</label>
+                                    <input type="number" class="form-input" id="appExpYears" min="3" max="50" value="15" required>
+                                    <small style="color: var(--text-muted); font-size: 0.75rem;" data-i18n="lblExpYearsNotice">40 points per year of practical experience (up to 600 pts)</small>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group" style="grid-column: 1 / -1; margin-bottom: 0;">
+                                    <label class="form-label mandatory" data-i18n="lblEnglishProficiency">Business & Technical English Proficiency</label>
+                                    <select class="form-select" id="appEnglishProficiency" required>
+                                        <option value="Fluent" selected data-i18n="optEngFluent">Fluent â€” Ready for International Training Delivery (100 pts)</option>
+                                        <option value="Intermediate" data-i18n="optEngInter">Intermediate Technical English (70 pts)</option>
+                                        <option value="Basic" data-i18n="optEngBasic">Basic Working English (40 pts)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ============================================================
+                             SECTION 7: TOP 7 TRAINING COURSES YOU CAN DELIVER
+                             ============================================================ -->
+                        <div class="reg-section-block" style="margin-bottom: 1.75rem; padding: 1.25rem; background: rgba(5, 17, 36, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.85rem;">
+                                <h4 style="color: var(--gold-bright); font-size: 1rem; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fa-solid fa-chalkboard-user"></i>
+                                    <span data-i18n="secSevenProgramsTitle">7. Top 7 Training Courses You Can Deliver in Your Specialty</span>
+                                </h4>
+                                <button type="button" id="btnAutoFillPrograms" style="background: rgba(212, 175, 55, 0.15); border: 1px solid var(--gold-bright); color: var(--gold-bright); padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    <span data-i18n="btnAutoFillProgramsText">Fill with Suggested Courses for This Specialty</span>
+                                </button>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.75rem;">
+                                <div>
+                                    <label class="form-label mandatory" style="font-size: 0.78rem;" data-i18n="lblProg1">Course 1</label>
+                                    <input type="text" class="form-input seven-prog-input" id="prog1" placeholder="1. Training Course Title" required>
+                                </div>
+                                <div>
+                                    <label class="form-label mandatory" style="font-size: 0.78rem;" data-i18n="lblProg2">Course 2</label>
+                                    <input type="text" class="form-input seven-prog-input" id="prog2" placeholder="2. Training Course Title" required>
+                                </div>
+                                <div>
+                                    <label class="form-label mandatory" style="font-size: 0.78rem;" data-i18n="lblProg3">Course 3</label>
+                                    <input type="text" class="form-input seven-prog-input" id="prog3" placeholder="3. Training Course Title" required>
+                                </div>
+                                <div>
+                                    <label class="form-label" style="font-size: 0.78rem;" data-i18n="lblProg4">Course 4</label>
+                                    <input type="text" class="form-input seven-prog-input" id="prog4" placeholder="4. Training Course Title">
+                                </div>
+                                <div>
+                                    <label class="form-label" style="font-size: 0.78rem;" data-i18n="lblProg5">Course 5</label>
+                                    <input type="text" class="form-input seven-prog-input" id="prog5" placeholder="5. Training Course Title">
+                                </div>
+                                <div>
+                                    <label class="form-label" style="font-size: 0.78rem;" data-i18n="lblProg6">Course 6</label>
+                                    <input type="text" class="form-input seven-prog-input" id="prog6" placeholder="6. Training Course Title">
+                                </div>
+                                <div style="grid-column: 1 / -1;">
+                                    <label class="form-label" style="font-size: 0.78rem;" data-i18n="lblProg7">Course 7</label>
+                                    <input type="text" class="form-input seven-prog-input" id="prog7" placeholder="7. Training Course Title">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ============================================================
+                             SECTION 8: 2-MINUTE INTRODUCTORY VIDEO
+                             ============================================================ -->
+                        <!-- ============================================================
+                             SECTION 8: 2-MINUTE INTRODUCTORY VIDEO (UPLOAD OR LINK)
+                             ============================================================ -->
+                        <div class="form-group" style="background: rgba(5, 17, 36, 0.65); border: 1px solid rgba(212, 175, 55, 0.35); padding: 1.35rem; border-radius: var(--radius-md); margin-bottom: 1.75rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.85rem;">
+                                <div>
+                                    <label class="form-label mandatory" style="margin-bottom: 0.2rem; font-size: 1rem; color: var(--gold-bright); display: flex; align-items: center; gap: 0.5rem;" data-i18n="lblVideoLink">
+                                        <i class="fa-solid fa-clapperboard"></i> 8. 2-Minute Introductory Video (Upload Video File or Paste Link)
+                                    </label>
+                                    <small style="color: var(--text-muted); font-size: 0.78rem;">Choose between direct file upload or pasting an external cloud link (Drive, YouTube, Vimeo, MP4).</small>
+                                </div>
+                                <a href="video/sample-video.mp4" download="Sample_120s_Pitch_Video.mp4" target="_blank" style="background: rgba(212, 175, 55, 0.15); border: 1px solid var(--gold-bright); color: var(--gold-bright); padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.76rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">
+                                    <i class="fa-solid fa-cloud-arrow-down"></i>
+                                    <span data-i18n="btnDownloadSampleVideo">Download Benchmark Video (120s)</span>
+                                </a>
+                            </div>
+
+                            <!-- Dual Options with Distinct Icons -->
+                            <div class="video-dual-options" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+                                <!-- Option 1: File Upload with fa-cloud-arrow-up icon -->
+                                <div class="video-option-card option-upload" style="background: rgba(212, 175, 55, 0.06); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 1.1rem;">
+                                    <div class="video-option-header" style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.65rem; font-weight: 800; font-size: 0.88rem; color: var(--gold-bright);">
+                                        <div style="width: 34px; height: 34px; border-radius: 8px; background: rgba(212, 175, 55, 0.2); display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+                                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        </div>
+                                        <div>
+                                            <div>Option A: Direct Video Upload</div>
+                                            <small style="color: var(--text-muted); font-weight: 500; font-size: 0.72rem;">Upload from computer (MP4, WebM, MOV)</small>
+                                        </div>
+                                    </div>
+                                    <input type="file" class="form-input" id="appVideoFile" accept="video/mp4,video/webm,video/quicktime,video/*" style="padding: 0.55rem; font-size: 0.8rem;">
+                                    <small id="videoUploadStatus" style="display: block; margin-top: 0.4rem; color: var(--text-muted); font-size: 0.74rem;">Max length: 120 seconds. File will be shared directly with the committee.</small>
+                                </div>
+
+                                <!-- Option 2: Link with fa-link icon -->
+                                <div class="video-option-card option-link" style="background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; padding: 1.1rem;">
+                                    <div class="video-option-header" style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.65rem; font-weight: 800; font-size: 0.88rem; color: #38BDF8;">
+                                        <div style="width: 34px; height: 34px; border-radius: 8px; background: rgba(56, 189, 248, 0.2); display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+                                            <i class="fa-solid fa-link"></i>
+                                        </div>
+                                        <div>
+                                            <div>Option B: Paste Video Link</div>
+                                            <small style="color: var(--text-muted); font-weight: 500; font-size: 0.72rem;">Google Drive, YouTube, OneDrive, or MP4 URL</small>
+                                        </div>
+                                    </div>
+                                    <input type="url" class="form-input" id="appVideoLink" placeholder="https://drive.google.com/... or https://youtube.com/..." value="video/sample-video.mp4" style="font-size: 0.8rem;" required>
+                                    <small style="display: block; margin-top: 0.4rem; color: var(--text-muted); font-size: 0.74rem;">Ensure public sharing is enabled so evaluators can play the video.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ============================================================
+                             SECTION 9: CHECK IF YOU HAVE
+                             ============================================================ -->
+                        <div class="reg-section-block" style="margin-bottom: 1.75rem; padding: 1.25rem; background: rgba(5, 17, 36, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md);">
+                            <h4 style="color: var(--gold-bright); font-size: 1rem; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-folder-plus"></i>
+                                <span data-i18n="secRequiredItemsTitle">9. Check if you have</span>
+                            </h4>
+
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+                                <label class="cert-checkbox-label">
+                                    <input type="checkbox" id="reqItemCv" checked required>
+                                    <span data-i18n="lblReqCv">Updated CV / Resume *</span>
+                                </label>
+                                <label class="cert-checkbox-label">
+                                    <input type="checkbox" id="reqItemCerts" checked required>
+                                    <span data-i18n="lblReqCerts">Copies of Academic & Professional Certificates *</span>
+                                </label>
+                                <label class="cert-checkbox-label">
+                                    <input type="checkbox" id="reqItemId" checked required>
+                                    <span data-i18n="lblReqId">Copy of National ID or Passport *</span>
+                                </label>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group" style="grid-column: 1 / -1; margin-bottom: 0;">
+                                    <label class="form-label mandatory" data-i18n="lblBankAccount">Bank Account Number / IBAN</label>
+                                    <input type="text" class="form-input" id="appBankAccount" placeholder="e.g., EG00 0000 0000 0000 0000 0000 00000 (Bank Name & Account / IBAN)" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ============================================================
+                             SECTION 10: APPLICANT DECLARATION & SIGNATURE
+                             ============================================================ -->
+                        <div class="reg-section-block" style="margin-bottom: 1.5rem; padding: 1.25rem; background: rgba(212, 175, 55, 0.07); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: var(--radius-md);">
+                            <h4 style="color: var(--gold-bright); font-size: 1rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-file-signature"></i>
+                                <span data-i18n="secDeclarationTitle">10. Applicant Declaration & Signature</span>
+                            </h4>
+
+                            <label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; margin-bottom: 1rem; font-size: 0.85rem; color: #FFFFFF; line-height: 1.6;">
+                                <input type="checkbox" id="appDeclarationCheck" checked required style="margin-top: 0.25rem; accent-color: var(--gold-bright); width: 18px; height: 18px;">
+                                <span data-i18n="lblDeclarationText">I confirm that all information and documents submitted in this application are accurate and complete. *</span>
+                            </label>
+
+                            <div class="form-row">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label mandatory" data-i18n="lblDeclApplicantName">Applicant Name</label>
+                                    <input type="text" class="form-input" id="appDeclName" placeholder="Full Name" required>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label class="form-label mandatory" data-i18n="lblDeclSignature">Signature (Type Full Name)</label>
+                                    <input type="text" class="form-input" id="appSignature" placeholder="Typed Signature" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary-gold" style="width: 100%; justify-content: center; margin-top: 0.5rem; padding: 0.95rem; font-size: 1rem;">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span data-i18n="btnSubmitApplication">Submit Trainer Application for Committee Review</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==========================================================================
+             VIEW 4: APPROVED TRAINERS DIRECTORY
+             ========================================================================== -->
+        <section id="skillsBankView" class="view-section">
+            <div class="section-header">
+                <span class="section-badge"><i class="fa-solid fa-layer-group"></i> <span data-i18n="skillsBankBadge">Trainers Directory</span></span>
+                <h3 class="section-title"><span data-i18n="skillsBankTitle">Approved Trainers & Subject Matter Experts Directory</span></h3>
+                <p class="section-desc" data-i18n="skillsBankDesc">A central directory for ENPPI Training Center and sector companies to search, filter, and assign certified trainers.</p>
+            </div>
+
+            <!-- Sub-Navigation: Switch between Approved Trainers Directory & Admin ROI -->
+            <div style="display: flex; justify-content: center; margin-bottom: 1.25rem;">
+                <div class="directory-subnav-bar">
+                    <button type="button" class="subnav-item active" id="btnSubnavDirectory" onclick="switchDirectorySubTab('directory')">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Approved Trainers Pool (13 Disciplines)</span>
+                    </button>
+                    <button type="button" class="subnav-item" id="btnSubnavRoi" onclick="switchDirectorySubTab('roi')">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Admin • Course Price & ROI Calculator</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter & Search Toolbar -->
+            <div class="filter-search-toolbar">
+                <div class="search-row">
+                    <div class="search-input-wrap">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" class="search-input" id="skillsSearchInput" placeholder="Search by trainer name, specialty, company, or certification level...">
+                    </div>
+                    <button class="btn-export-csv" id="btnExportCsv">
+                        <i class="fa-solid fa-file-csv"></i>
+                        <span data-i18n="btnExportCsv">Export Directory to Excel (CSV)</span>
+                    </button>
+                </div>
+
+                <div class="filter-chips-row" id="filterChipsRow">
+                    <button class="filter-chip active" data-filter="all" data-i18n="filterAll">All Trainers</button>
+                    <button class="filter-chip" data-filter="upstream" data-i18n="filterUpstream">Upstream (Exploration & Production)</button>
+                    <button class="filter-chip" data-filter="downstream" data-i18n="filterDownstream">Downstream & Refining</button>
+                    <button class="filter-chip" data-filter="midstream" data-i18n="filterMidstream">Midstream & Pipelines</button>
+                    <button class="filter-chip" data-filter="hse" data-i18n="filterHse">Health, Safety & Environment (HSE)</button>
+                    <button class="filter-chip" data-filter="digital_tech" data-i18n="filterDigital">Digital Transformation & AI</button>
+                    <button class="filter-chip" data-filter="Cohort B" data-i18n="filterCohortB">Group B (Senior Consultants)</button>
+                    <button class="filter-chip" data-filter="master" data-i18n="filterMasterStar">Lead / Master Trainers</button>
+                </div>
+            </div>
+
+            <!-- Dynamic Trainer Cards Grid -->
+            <div class="experts-grid" id="expertsGrid">
+                <!-- Populated dynamically via app.js -->
+            </div>
+
+            <!-- ============================================================
+                 ROI CALCULATOR (PLACED UNDER APPROVED TRAINERS DIRECTORY)
+                 ============================================================ -->
+            <div id="roiCalculatorSection" class="roi-calculator-section" style="margin-top: 3.5rem; border-top: 1px solid rgba(212, 175, 55, 0.35); padding-top: 2.5rem;">
+                <div class="section-header" style="margin-bottom: 1.5rem;">
+                    <span class="section-badge" style="background: rgba(212, 175, 55, 0.15); border-color: rgba(212, 175, 55, 0.4); color: var(--gold-bright);">
+                        <i class="fa-solid fa-chart-line"></i> <span data-i18n="roiBadge">Economic Feasibility & ROI</span>
+                    </span>
+                    <h3 class="section-title"><span data-i18n="roiTitle">Course Price Comparison & ROI Calculator</span></h3>
+                    <p class="section-desc" data-i18n="roiDesc">Compare external vs. in-house trainer daily rates by specialty, days, and annual volume. Direct cost reduction and foreign currency retention for the petroleum sector.</p>
+                </div>
+
+                <div class="roi-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span style="font-weight: 700; color: #FFFFFF; font-size: 0.95rem;">
+                                <i class="fa-solid fa-sliders" style="color: var(--gold-bright);"></i>
+                                <span data-i18n="roiInteractiveParams">Interactive Simulation Parameters</span>
+                            </span>
+                        </div>
+                        <div style="display: flex; gap: 0.55rem; flex-wrap: wrap;">
+                            <button type="button" id="btnFillDemoRoi" class="btn-primary-gold" style="padding: 0.45rem 0.95rem; font-size: 0.78rem;" onclick="fillDemoRoiBenchmark()">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span data-i18n="btnFillDemoRoi">Load Demo Benchmark Figures</span>
+                            </button>
+                            <button type="button" id="btnClearRoiInputs" class="btn-outline-gold" style="padding: 0.45rem 0.95rem; font-size: 0.78rem;">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span data-i18n="btnClearRoi">Clear Numbers</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="roi-grid">
+                        <div class="slider-group">
+                            <!-- Specialty Selection -->
+                            <div class="slider-item">
+                                <div class="slider-label-wrap">
+                                    <span class="slider-label" data-i18n="roiSpecialtyLabel">Target Training Specialty</span>
+                                    <span class="slider-current-val" id="roiSpecialtyDisplay" style="font-size: 0.88rem; color: #38BDF8;">All Petroleum Disciplines</span>
+                                </div>
+                                <select class="form-select" id="roiSpecialtySelect">
+                                    <!-- Populated dynamically via app.js -->
+                                </select>
+                            </div>
+
+                            <!-- Course Duration (Days) -->
+                            <div class="slider-item">
+                                <div class="slider-label-wrap">
+                                    <span class="slider-label" data-i18n="roiDaysLabel">Average Course Duration (Days)</span>
+                                    <span class="slider-current-val" id="roiDaysDisplay">—</span>
+                                </div>
+                                <input type="number" class="form-input" id="roiCourseDays" min="1" max="60" step="1" value="" placeholder="Enter average course duration in days (e.g., 5)">
+                            </div>
+
+                            <!-- External Daily Rate -->
+                            <div class="slider-item">
+                                <div class="slider-label-wrap">
+                                    <span class="slider-label" data-i18n="sliderForeignCostLabel">Average External Trainer Daily Rate (USD / Day)</span>
+                                    <span class="slider-current-val" id="foreignCostDisplay">—</span>
+                                </div>
+                                <input type="number" class="form-input" id="foreignCostSlider" min="100" max="50000" step="50" value="" placeholder="Enter external trainer daily rate in USD (e.g., 3000)">
+                            </div>
+
+                            <!-- Internal Sector Daily Rate -->
+                            <div class="slider-item">
+                                <div class="slider-label-wrap">
+                                    <span class="slider-label" data-i18n="sliderNationalCostLabel">Average In-House Sector Trainer Daily Rate (USD / Day)</span>
+                                    <span class="slider-current-val" id="nationalCostDisplay">—</span>
+                                </div>
+                                <input type="number" class="form-input" id="nationalCostSlider" min="50" max="25000" step="25" value="" placeholder="Enter internal trainer daily rate in USD (e.g., 500)">
+                            </div>
+
+                            <!-- Number of Courses per Year -->
+                            <div class="slider-item">
+                                <div class="slider-label-wrap">
+                                    <span class="slider-label" data-i18n="sliderCoursesLabel">Number of Courses Delivered per Year (After Rollout)</span>
+                                    <span class="slider-current-val" id="coursesCountDisplay">—</span>
+                                </div>
+                                <input type="number" class="form-input" id="coursesSlider" min="1" max="2000" step="1" value="" placeholder="Enter number of courses per year (e.g., 100)">
+                            </div>
+
+                            <!-- Exchange Rate -->
+                            <div class="slider-item">
+                                <div class="slider-label-wrap">
+                                    <span class="slider-label" data-i18n="sliderEgpRateLabel">Exchange Rate (USD to EGP)</span>
+                                    <span class="slider-current-val" id="egpRateDisplay">—</span>
+                                </div>
+                                <input type="number" class="form-input" id="egpRateSlider" min="1" max="200" step="0.1" value="" placeholder="Enter USD to EGP exchange rate (e.g., 50)">
+                            </div>
+                        </div>
+
+                        <div class="roi-metrics-summary" id="roiMetricsSummaryBox" style="opacity: 0.55; transition: all 0.3s ease;">
+                            <div id="roiStatusBanner" style="background: rgba(212, 175, 55, 0.12); border: 1px dashed rgba(212, 175, 55, 0.45); color: var(--gold-bright); padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem;">
+                                <i class="fa-solid fa-keyboard"></i>
+                                <span id="roiStatusBannerText" data-i18n="roiAwaitingInput">Enter numbers in the fields below or click 'Load Demo Benchmark Figures'</span>
+                            </div>
+
+                            <!-- Single Course Price Comparison Card -->
+                            <div class="roi-result-box" id="roiCourseComparisonCard" style="padding: 1.25rem; background: rgba(5, 17, 36, 0.75); border: 1px solid rgba(212, 175, 55, 0.35);">
+                                <div class="roi-result-label" style="color: var(--gold-bright); font-size: 0.85rem;" data-i18n="roiSingleCourseHeader">Single Course Price Comparison in Specialty</div>
+                                
+                                <div class="roi-comparison-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem;">
+                                    <div class="roi-comparison-mini-card external" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 8px; padding: 0.75rem;">
+                                        <div class="roi-comparison-mini-title" style="font-size: 0.72rem; color: #FCA5A5; font-weight: 600;" data-i18n="roiExternalCoursePrice">Course Price (External Provider)</div>
+                                        <div class="roi-comparison-mini-val" id="singleCourseExternalDisplay" style="font-size: 1.25rem; font-weight: 800; color: #FCA5A5;">—</div>
+                                        <small id="singleCourseExternalFormula" style="display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem;">Days × External Rate</small>
+                                    </div>
+
+                                    <div class="roi-comparison-mini-card internal" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; padding: 0.75rem;">
+                                        <div class="roi-comparison-mini-title" style="font-size: 0.72rem; color: #6EE7B7; font-weight: 600;" data-i18n="roiInternalCoursePrice">Course Price (In-House Sector Trainer)</div>
+                                        <div class="roi-comparison-mini-val" id="singleCourseInternalDisplay" style="font-size: 1.25rem; font-weight: 800; color: #6EE7B7;">—</div>
+                                        <small id="singleCourseInternalFormula" style="display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem;">Days × Sector Rate</small>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 0.85rem; padding: 0.6rem 0.85rem; background: rgba(212, 175, 55, 0.12); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: 0.8rem; color: var(--gold-bright); font-weight: 700;" data-i18n="roiCourseSavingsLabel">Net Savings per Course:</span>
+                                    <span id="singleCourseSavingsDisplay" style="font-size: 1.05rem; font-weight: 800; color: #FFFFFF;">—</span>
+                                </div>
+                            </div>
+
+                            <!-- Total Annual Foreign Currency Saved (USD) -->
+                            <div class="roi-result-box highlight" id="roiUsdBox">
+                                <div class="roi-result-label" data-i18n="roiNetUsdLabel">Total Annual Cost Savings (USD)</div>
+                                <div class="roi-result-value gold" id="netUsdSavedDisplay">—</div>
+                                <div class="roi-result-sub"><i class="fa-solid fa-arrow-trend-up"></i> <span data-i18n="roiHardCurrencyRetained">Direct Retained Budget & Sector Value</span></div>
+                            </div>
+
+                            <!-- Total Annual Cost Savings (EGP) -->
+                            <div class="roi-result-box" id="roiEgpBox">
+                                <div class="roi-result-label" data-i18n="roiNetEgpLabel">Total Annual Cost Savings (EGP)</div>
+                                <div class="roi-result-value" id="netEgpSavedDisplay">—</div>
+                                <div class="roi-result-sub" id="roiDynamicPaybackText" data-i18n="roiPaybackRatio">Training Cost Reduction Rate: —</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div id="adminView" style="display:none;"></div>
+    </main>
+
+    <!-- ==============================================================================
+         TRAINER PROFILE MODAL
+         ============================================================================== -->
+    <div class="modal-backdrop" id="dossierModal">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close Modal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="dossier-header">
+                <div class="dossier-headline">
+                    <span class="candidate-id-code" id="modalExpertCode">XP-0101</span>
+                    <h2 id="modalExpertName">Eng. Ahmed Mahmoud El-Ghandour</h2>
+                    <p class="dossier-sub" id="modalExpertMeta">GUPCO | Upstream &bull; Petroleum Eng - Reservoir</p>
+                </div>
+                <div style="text-align: right;">
+                    <span class="tier-tag badge-master" id="modalExpertTier">Lead / Master Trainer</span>
+                    <div style="font-size: 0.8rem; color: var(--gold-bright); margin-top: 0.35rem;" id="modalExpertCohort">Group A: Currently Employed</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                <div style="background: rgba(5, 17, 36, 0.6); padding: 1rem; border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="modalExp">Experience</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: #FFFFFF;" id="modalExpYears">18 Years</div>
+                </div>
+                <div style="background: rgba(5, 17, 36, 0.6); padding: 1rem; border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="modalTqi">Training Quality Rating</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: var(--gold-bright);" id="modalTqiScore">4.95 / 5.0</div>
+                </div>
+                <div style="background: rgba(5, 17, 36, 0.6); padding: 1rem; border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.08);">
+                    <div style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="modalCourses">Courses Delivered</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: #FFFFFF;" id="modalCoursesDelivered">14 Courses (380 Trainees)</div>
+                </div>
+            </div>
+
+            <!-- Competency Performance Progress Bars -->
+            <div class="dossier-tripartite-bars">
+                <div class="bar-item">
+                    <div class="bar-meta">
+                        <span data-i18n="dossierPillar1">Area 1: Subject Matter Expertise & Thinking Skills (35%)</span>
+                        <span id="modalCognitivePct" style="color: #F3BA2F;">96%</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill cognitive" id="modalCognitiveBar" style="width: 96%;"></div>
+                    </div>
+                </div>
+
+                <div class="bar-item">
+                    <div class="bar-meta">
+                        <span data-i18n="dossierPillar2">Area 2: Training Delivery & Presentation Skills (35%)</span>
+                        <span id="modalTechnicalPct" style="color: #38BDF8;">94%</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill technical" id="modalTechnicalBar" style="width: 94%;"></div>
+                    </div>
+                </div>
+
+                <div class="bar-item">
+                    <div class="bar-meta">
+                        <span data-i18n="dossierPillar3">Area 3: Communication, Coaching & Professionalism (30%)</span>
+                        <span id="modalInterpersonalPct" style="color: #10B981;">95%</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill interpersonal" id="modalInterpersonalBar" style="width: 95%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practical Field Case Study -->
+            <div class="seci-box">
+                <h4>
+                    <i class="fa-solid fa-atom"></i>
+                    <span data-i18n="seciTitle">Practical Case Study & Knowledge Sharing Plan</span>
+                </h4>
+                <p id="modalSeciCaseStudy">
+                    Practical field case study converting operational experience into structured training modules for petroleum engineers.
+                </p>
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+                <button class="btn-primary-gold" id="btnRequestTrainerSecondment">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span data-i18n="btnRequestSecondment">Request Trainer Assignment</span>
+                </button>
+            </div>
+        </div>
     </div>
+
+    <!-- ==============================================================================
+         120-SECOND OFFICIAL PROJECT VIDEO THEATER MODAL
+         ============================================================================== -->
+    <div class="modal-backdrop promo-theater-backdrop" id="promoVideoModal" style="display: none;">
+        <div class="promo-theater-card" style="max-width: 960px; width: 95%; background: rgba(5, 17, 36, 0.98); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.85);">
+            <!-- Theater Header -->
+            <div class="promo-theater-header" style="display: flex; justify-content: space-between; align-items: center; padding: 1.15rem 1.5rem; border-bottom: 1px solid rgba(212, 175, 55, 0.3); background: rgba(14, 40, 73, 0.9);">
+                <div class="theater-title-group" style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
+                    <div class="theater-live-badge" style="background: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.45); color: var(--gold-bright); padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.78rem; font-weight: 800; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <span class="pulse-dot"></span> ENPPI STUDIO • 120s PROJECT VIDEO
+                    </div>
+                    <h3 class="theater-title" style="margin: 0; color: #FFFFFF; font-size: 1.15rem; font-weight: 800;">
+                        See XpertGate in 120 Seconds (Official Project Video)
+                    </h3>
+                </div>
+                <div class="theater-header-actions" style="display: flex; align-items: center; gap: 0.65rem;">
+                    <a href="video/sample-video.mp4" download="Enppi_XpertGate_Project_Video.mp4" class="btn-outline-gold" style="font-size: 0.8rem; padding: 0.4rem 0.9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">
+                        <i class="fa-solid fa-download"></i> <span>Download MP4</span>
+                    </a>
+                    <button class="modal-close-btn" onclick="closePromoVideoModal()" aria-label="Close Video" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #FFFFFF; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cinema Viewport: Real Project Video -->
+            <div style="background: #000000; position: relative; padding: 0; display: flex; justify-content: center; align-items: center;">
+                <video id="modalPromoVideoPlayer" controls preload="auto" poster="assets/Logo.jpeg" style="width: 100%; max-height: 68vh; display: block; background: #000;">
+                    <source src="video/sample-video.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <!-- Theater Bottom Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 1rem 1.5rem; background: rgba(14, 40, 73, 0.95); border-top: 1px solid rgba(255, 255, 255, 0.08);">
+                <div style="color: #CBD5E1; font-size: 0.84rem; display: flex; align-items: center; gap: 0.6rem;">
+                    <i class="fa-solid fa-circle-info" style="color: var(--gold-bright);"></i>
+                    <span>Official 2-minute introductory pitch on in-house trainer qualification and sector knowledge transfer.</span>
+                </div>
+                <button type="button" class="btn-primary-gold" onclick="closePromoVideoModal();switchRoleView('applicantView');" style="padding: 0.55rem 1.35rem; font-size: 0.85rem; font-weight: 800; display: inline-flex; align-items: center; gap: 0.55rem;">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Register as In-House Trainer</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Element -->
+    <div class="toast-notification success" id="toastNotification">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastMessage">Saved successfully</span>
+    </div>
+
+    <!-- Executive Footer (Location, Contact & Official LinkedIn) -->
+    <footer class="app-footer">
+        <div class="footer-grid-container" style="max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; text-align: start; padding-bottom: 1.75rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+            <!-- Column 1: Location & Headquarters -->
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--gold-bright); font-weight: 800; font-size: 1rem; margin-bottom: 0.65rem;">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span data-i18n="footerLocationTitle">Headquarters & Location</span>
+                </div>
+                <p style="margin: 0 0 0.4rem 0; color: #FFFFFF; font-weight: 700; font-size: 0.9rem;" data-i18n="footerCompanyFull">
+                    Engineering for the Petroleum & Process Industries (ENPPI)
+                </p>
+                <p style="margin: 0; color: #CBD5E1; font-size: 0.85rem; line-height: 1.6;" data-i18n="footerAddressDetail">
+                    Fifth Settlement â€” North 90th Street, New Cairo, Cairo, Egypt
+                </p>
+            </div>
+
+            <!-- Column 2: Direct Contact Channels -->
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--gold-bright); font-weight: 800; font-size: 1rem; margin-bottom: 0.65rem;">
+                    <i class="fa-solid fa-phone-volume"></i>
+                    <span data-i18n="footerContactTitle">Contact & Support</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.85rem; color: #CBD5E1;">
+                    <div>
+                        <i class="fa-solid fa-envelope" style="color: var(--gold-bright); width: 18px;"></i>
+                        <strong data-i18n="footerEmailLbl">Email:</strong>
+                        <a href="mailto:xpertgate@enppi.com" style="color: #38BDF8; text-decoration: none; margin-inline-start: 0.3rem;">xpertgate@enppi.com</a>
+                        &bull;
+                        <a href="mailto:training@enppi.com" style="color: #38BDF8; text-decoration: none;">training@enppi.com</a>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-phone" style="color: var(--gold-bright); width: 18px;"></i>
+                        <strong data-i18n="footerPhoneLbl">Phone:</strong>
+                        <span dir="ltr" style="margin-inline-start: 0.3rem; color: #FFFFFF;">+20 2 2276 2100</span>
+                        &bull;
+                        <span dir="ltr" style="color: #FFFFFF;">+20 2 2276 2111</span>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-clock" style="color: var(--gold-bright); width: 18px;"></i>
+                        <span data-i18n="footerWorkHours">Working Hours: Sunday â€“ Thursday (8:00 AM â€“ 4:00 PM)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 3: Official LinkedIn & Website -->
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.6rem; color: var(--gold-bright); font-weight: 800; font-size: 1rem; margin-bottom: 0.65rem;">
+                    <i class="fa-brands fa-linkedin"></i>
+                    <span data-i18n="footerSocialTitle">Official LinkedIn & Website</span>
+                </div>
+                <p style="margin: 0 0 0.75rem 0; color: #CBD5E1; font-size: 0.83rem; line-height: 1.5;" data-i18n="footerSocialDesc">
+                    Follow ENPPI Training & Organizational Development on LinkedIn and visit our official website:
+                </p>
+                <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+                    <a href="https://www.linkedin.com/company/enppi" target="_blank" rel="noopener" style="background: rgba(10, 102, 194, 0.22); border: 1px solid rgba(56, 189, 248, 0.45); color: #FFFFFF; padding: 0.45rem 0.95rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 0.45rem;">
+                        <i class="fa-brands fa-linkedin" style="color: #38BDF8; font-size: 1rem;"></i>
+                        <span data-i18n="footerLinkedInBtn">ENPPI Official LinkedIn</span>
+                    </a>
+                    <a href="https://www.enppi.com" target="_blank" rel="noopener" class="btn-outline-gold" style="padding: 0.45rem 0.95rem; font-size: 0.8rem; text-decoration: none;">
+                        <i class="fa-solid fa-globe"></i>
+                        <span data-i18n="footerWebsiteBtn">www.enppi.com</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-content" style="padding-top: 1.25rem; justify-content: center;">
+            <div data-i18n="footerCopyright">
+                ENPPI XpertGate Â© 2026 â€¢ Certified Internal Trainers & Knowledge Sharing Platform â€¢ Under the Auspices of the Ministry of Petroleum & Mineral Resources
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Data and Controller Scripts -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
+

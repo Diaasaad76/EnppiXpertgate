@@ -16,6 +16,93 @@ const AppState = {
     isCommitteeLoggedIn: false
 };
 
+// Immediate Global View Switcher & Directory Subnav Handler
+window.switchDirectorySubTab = function(subTab) {
+    const btnDir = document.getElementById("btnSubnavDirectory");
+    const btnRoi = document.getElementById("btnSubnavRoi");
+    const isRoi = subTab === "roi";
+
+    if (btnDir) btnDir.classList.toggle("active", !isRoi);
+    if (btnRoi) btnRoi.classList.toggle("active", isRoi);
+
+    if (isRoi) {
+        const roiEl = document.getElementById("roiCalculatorSection");
+        if (roiEl) {
+            roiEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    } else {
+        const gridEl = document.getElementById("skillsBankView");
+        if (gridEl) {
+            window.scrollTo({ top: gridEl.offsetTop - 20, behavior: "smooth" });
+        }
+    }
+};
+
+window.switchRoleView = function(targetViewId, subTargetId) {
+    if (!targetViewId) return;
+
+    // Backward compatibility for adminView
+    if (targetViewId === "adminView" || targetViewId === "roiCalculatorSection") {
+        targetViewId = "skillsBankView";
+        subTargetId = "roiCalculatorSection";
+    }
+
+    const roleButtons = document.querySelectorAll(".role-btn");
+    const viewSections = document.querySelectorAll(".view-section");
+
+    // Toggle active states on role buttons
+    roleButtons.forEach(b => {
+        const btnView = b.getAttribute("data-view");
+        const isMatch = btnView === targetViewId;
+        b.classList.toggle("active", isMatch);
+        b.setAttribute("aria-selected", isMatch ? "true" : "false");
+    });
+
+    // Toggle visibility of view sections
+    viewSections.forEach(section => {
+        const isTargetSection = section.id === targetViewId;
+        section.classList.toggle("active", isTargetSection);
+    });
+
+    AppState.currentRoleView = targetViewId;
+
+    // If switching to Committee room, adapt gate/workspace to login state
+    if (targetViewId === "screeningView") {
+        const gate = document.getElementById("committeeLoginGate");
+        const ws = document.getElementById("committeeWorkspace");
+        if (AppState.isCommitteeLoggedIn) {
+            if (gate) gate.style.display = "none";
+            if (ws) ws.style.display = "block";
+        } else {
+            if (gate) gate.style.display = "block";
+            if (ws) ws.style.display = "none";
+        }
+    }
+
+    // Handle sub-target scrolling in skillsBankView
+    if (targetViewId === "skillsBankView" && subTargetId === "roiCalculatorSection") {
+        setTimeout(() => {
+            window.switchDirectorySubTab("roi");
+        }, 50);
+    } else if (targetViewId === "skillsBankView") {
+        setTimeout(() => {
+            window.switchDirectorySubTab("directory");
+        }, 50);
+    } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+};
+
+window.navigateToExecutiveSection = function(sectionId) {
+    window.switchRoleView("executiveView");
+    setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }, 80);
+};
+
 // ==============================================================================
 // PERSISTENT DATABASE SERVICE (Integrated Native SQLite DB Engine)
 // ==============================================================================
@@ -147,8 +234,20 @@ const TRANSLATIONS = {
         brandSubtitle: "ENPPI XpertGate | مجمع الخبراء والمدربين المعتمدين - وزارة البترول والثروة المعدنية",
         navExecutive: "واجهة القيادة العليا (C-Suite)",
         navScreening: "غرفة التحكيم والفرز الذكي",
-        navApplicant: "بوابة المتقدمين والتقييم الذاتي",
+        navApplicant: "تسجيل المدربين",
         navSkillsBank: "بنك المهارات ومستودع الخبراء",
+        navItemMissionVision: "الرؤية والرسالة",
+        navItemMissionVisionSub: "المحاور الاستراتيجية وحفظ الخبرات",
+        navItemProjectVideo: "فيديو المشروع",
+        navItemProjectVideoSub: "عرض تعريفي متكامل في 120 ثانية",
+        navItemKeyIndicators: "المؤشرات الرئيسية",
+        navItemKeyIndicatorsSub: "ملخص التسجيل والفرز والتأهيل",
+        navItemObjectives: "أهداف المشروع",
+        navItemObjectivesSub: "الأهداف الاستراتيجية الستة للمنظومة",
+        navItemWorkflow: "مراحل التنفيذ ومخطط العمل",
+        navItemWorkflowSub: "خطة التطبيق المرحلية (5 مراحل رئيسية)",
+        navItemRegister: "تسجيل",
+        navItemRegisterSub: "استمارة التقديم والتقييم الذاتي",
         liveGateway: "بوابة تشغيلية معتمدة",
         auspices: "تحت رعاية وزارة البترول والثروة المعدنية المصرية",
         leaderEngKhaled: "م. خالد إبراهيم (رئيس مجلس الإدارة والعضو المنتدب)",
@@ -303,6 +402,7 @@ const TRANSLATIONS = {
         lblPrimaryCvHint: "يرجى رفع ملف السيرة الذاتية المحدثة بصيغة PDF أو Word (.pdf, .doc, .docx) ليتم حفظه وإتاحته للجنة التقييم.",
         secCareerTitle: "3. بيانات الشركة، المسيرة المهنية، ومستوى الإتاحة للتدريب",
         lblDepartment: "الإدارة / القطاع التابع له بالشركة (Department)",
+        lblDirectManager: "اسم وصفة المدير المباشر (Direct Manager)",
         lblHrEmail: "البريد الإلكتروني لإدارة الموارد البشرية بشركتك (HR Department Email)",
         lblCareerPositions: "المناصب الوظيفية التي شغلتها خلال مسيرتك المهنية (Positions Held During Career Journey)",
         lblAvailability: "مستوى الإتاحة للتدريب والندب (Level of Availability)",
@@ -473,6 +573,18 @@ const TRANSLATIONS = {
         navScreening: "Evaluation Committee",
         navApplicant: "Trainer Registration",
         navSkillsBank: "Approved Trainers Directory",
+        navItemMissionVision: "Mission & Vision",
+        navItemMissionVisionSub: "Strategic Pillars & Industry Know-How",
+        navItemProjectVideo: "Project Video",
+        navItemProjectVideoSub: "120-Second Featured Pitch",
+        navItemKeyIndicators: "Key Indicators",
+        navItemKeyIndicatorsSub: "Registration & Qualification KPIs",
+        navItemObjectives: "Project Objectives",
+        navItemObjectivesSub: "The 6 Strategic Goals of XpertGate",
+        navItemWorkflow: "Project Workflow",
+        navItemWorkflowSub: "5-Phase Implementation Plan",
+        navItemRegister: "Register",
+        navItemRegisterSub: "Trainer Intake & Self-Assessment",
         liveGateway: "Official Portal",
         auspices: "Under the Auspices of the Ministry of Petroleum & Mineral Resources",
         leaderEngKhaled: "Eng. Khaled Ibrahim (Chairman & CEO)",
@@ -627,6 +739,7 @@ const TRANSLATIONS = {
         lblPrimaryCvHint: "Please upload your updated CV (.pdf, .doc, or .docx). It will be shared directly with the Evaluation Committee.",
         secCareerTitle: "3. Company Details, Job History & Availability for Training",
         lblDepartment: "Department / Division",
+        lblDirectManager: "Direct Manager (Name & Position)",
         lblHrEmail: "Your Company's HR / Training Department Email",
         lblCareerPositions: "Previous Job Titles & Key Roles Held During Your Career",
         lblAvailability: "Availability to Deliver Training Courses",
@@ -814,9 +927,9 @@ const TRANSLATIONS = {
 // ==============================================================================
 // INITIALIZATION ON DOM READY
 // ==============================================================================
-document.addEventListener("DOMContentLoaded", async () => {
-    initI18n();
+async function startApp() {
     initRoleSwitcher();
+    initI18n();
     renderRoadmapStages();
     initRoiCalculator();
     
@@ -840,7 +953,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     initDossierModal();
     initCsvExport();
     initDatabaseControls();
-});
+}
+
+if (typeof document !== "undefined") {
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", startApp);
+    } else {
+        startApp();
+    }
+}
 
 function initDatabaseControls() {
     const btnReset = document.getElementById("btnResetDatabase");
@@ -925,6 +1046,7 @@ function applyLanguage(lang) {
     setPlaceholder("appCompany", "مثال: ENPPI, GASCO, GUPCO, Petrobel", "e.g., ENPPI, GASCO, GUPCO, Petrobel");
     setPlaceholder("appDepartment", "مثال: الإدارة العامة لهندسة العمليات / الحفر / الموارد البشرية", "e.g., Process Engineering / Drilling / HR & Training");
     setPlaceholder("appJobTitle", "مثال: مدير عام هندسة العمليات / استشاري حفر أول", "e.g., General Manager of Process Engineering / Senior Drilling Advisor");
+    setPlaceholder("appDirectManager", "مثال: م. أحمد مصطفى — مدير عام الإدارة", "e.g., Eng. Ahmed Mostafa — General Manager");
     setPlaceholder("appHrEmail", "hr@company.com.eg", "hr@company.com.eg");
     setPlaceholder("appCareerPositions", "اذكر أهم المناصب الهندسية والقيادية والاستشارية التي شغلتها خلال مسيرتك المهنية...", "List your previous job titles and key roles in chronological order...");
     setPlaceholder("bscField", "التخصص (مثال: هندسة البترول / الهندسة الكيميائية)", "Major / Specialty (e.g., Chemical Engineering)");
@@ -984,56 +1106,6 @@ function showToast(msgKey) {
 // ==============================================================================
 function initRoleSwitcher() {
     const roleButtons = document.querySelectorAll(".role-btn");
-    const viewSections = document.querySelectorAll(".view-section");
-
-    window.switchRoleView = function(targetViewId) {
-        if (!targetViewId) return;
-
-        const isRoiTarget = targetViewId === "adminView" || targetViewId === "roiCalculatorSection";
-        const actualViewSectionId = isRoiTarget ? "skillsBankView" : targetViewId;
-
-        // Toggle active states on role buttons
-        roleButtons.forEach(b => {
-            const btnView = b.getAttribute("data-view");
-            const isMatch = btnView === targetViewId;
-            b.classList.toggle("active", isMatch);
-            b.setAttribute("aria-selected", isMatch ? "true" : "false");
-        });
-
-        // Toggle visibility of view sections
-        viewSections.forEach(section => {
-            const isTargetSection = section.id === actualViewSectionId;
-            section.classList.toggle("active", isTargetSection);
-        });
-
-        AppState.currentRoleView = targetViewId;
-
-        // If switching to Committee room, adapt gate/workspace to login state
-        if (actualViewSectionId === "screeningView") {
-            const gate = document.getElementById("committeeLoginGate");
-            const ws = document.getElementById("committeeWorkspace");
-            if (AppState.isCommitteeLoggedIn) {
-                if (gate) gate.style.display = "none";
-                if (ws) ws.style.display = "block";
-            } else {
-                if (gate) gate.style.display = "block";
-                if (ws) ws.style.display = "none";
-            }
-        }
-
-        // Handle scrolling: scroll directly to ROI section if requested, otherwise top
-        if (isRoiTarget) {
-            setTimeout(() => {
-                const roiEl = document.getElementById("roiCalculatorSection");
-                if (roiEl) {
-                    roiEl.scrollIntoView({ behavior: "smooth", block: "start" });
-                }
-            }, 80);
-        } else {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-    };
-
     roleButtons.forEach(btn => {
         btn.addEventListener("click", () => {
             const targetViewId = btn.getAttribute("data-view");
@@ -2290,6 +2362,7 @@ function renderCandidateRegistrationSummary(cand) {
                     <div style="color: var(--gold-bright); font-weight: 700; margin-bottom: 0.35rem;"><i class="fa-solid fa-address-book"></i> ${isAr ? 'بيانات التواصل والعمل' : 'Contact & Work Info'}</div>
                     <div><strong>${isAr ? 'الشركة والإدارة:' : 'Company & Dept:'}</strong> ${cand.company} ${reg.department ? '— ' + reg.department : ''}</div>
                     <div><strong>${isAr ? 'المنصب الحالي:' : 'Job Title:'}</strong> ${cand.jobTitle || '-'}</div>
+                    <div><strong>${isAr ? 'المدير المباشر:' : 'Direct Manager:'}</strong> ${reg.directManager || cand.directManager || '-'}</div>
                     <div><strong>${isAr ? 'البريد والهاتف:' : 'Email & Phone:'}</strong> ${cand.email || '-'} | ${reg.phone || '-'}</div>
                     <div><strong>${isAr ? 'بريد HR والتفرغ:' : 'HR Email & Availability:'}</strong> ${reg.hrEmail || '-'} (${reg.availability || 'Available'})</div>
                 </div>
@@ -2910,10 +2983,13 @@ function calculateRubricTotal() {
     };
 }
 
-// Aliases for seamless integration with existing callers
-window.renderXpertgateCompetencyMatrix = renderPhysicalAssessmentSheet;
-window.loadRubricCriteria = renderPhysicalAssessmentSheet;
-window.calculateSimulationRubric = calculateRubricTotal;
+// Aliases for seamless integration with existing callers (hoisted function declarations)
+function renderXpertgateCompetencyMatrix(cand) { return renderPhysicalAssessmentSheet(cand); }
+function loadRubricCriteria(cand) { return renderPhysicalAssessmentSheet(cand); }
+function calculateSimulationRubric() { return calculateRubricTotal(); }
+window.renderXpertgateCompetencyMatrix = renderXpertgateCompetencyMatrix;
+window.loadRubricCriteria = loadRubricCriteria;
+window.calculateSimulationRubric = calculateSimulationRubric;
 
 function initSimulationRubric() {
     const btnSave = document.getElementById("btnSaveSimulationResult");
@@ -2962,6 +3038,49 @@ function initSimulationRubric() {
     }
 }
 
+// ==============================================================================
+// 5. APPLICANT INTAKE & FULL 10-SECTION REGISTRATION FORM SUBMISSION
+// ==============================================================================
+window.fillSpecialtyProgramsAndScroll = function(shouldScroll) {
+    const domainSelect = document.getElementById("appDomain");
+    const subSelect = document.getElementById("appSubDiscipline");
+    if (!domainSelect) return;
+
+    const isAr = AppState.currentLang === "ar";
+    const domains = (typeof PETROLEUM_DOMAINS !== "undefined") ? PETROLEUM_DOMAINS : (window.PETROLEUM_DOMAINS || []);
+    const domain = domains.find(d => d.id === domainSelect.value) || domains[0];
+    if (!domain) return;
+    const subDisciplines = domain.subDisciplines || [];
+    const sub = subDisciplines.find(s => s.id === (subSelect ? subSelect.value : "")) || subDisciplines[0];
+
+    const topics = isAr ? (domain.priorityTopicsAr || []) : (domain.priorityTopicsEn || []);
+    const comps = isAr ? (domain.competenciesAr || []) : (domain.competenciesEn || []);
+    const combined = [...topics, ...comps];
+    const subName = sub ? (isAr ? sub.nameAr : sub.nameEn) : "";
+
+    for (let i = 1; i <= 7; i++) {
+        const inputEl = document.getElementById(`prog${i}`);
+        if (inputEl) {
+            if (combined[i - 1]) {
+                inputEl.value = combined[i - 1];
+            } else {
+                inputEl.value = isAr
+                    ? `برنامج متقدم #${i} في ${subName}`
+                    : `Specialized Training Course #${i} in ${subName}`;
+            }
+        }
+    }
+
+    if (shouldScroll) {
+        const targetEl = document.getElementById("regFormFieldsAnchor");
+        if (targetEl) {
+            targetEl.scrollIntoView({ behavior: "smooth" });
+        }
+        showToast(isAr
+            ? "تم إدراج الـ 7 برامج تدريبية التخصصية وتجهيز استمارة التسجيل لهذا التخصص!"
+            : "Filled the 7 suggested training courses — you can now complete your registration below!");
+    }
+};
 
 function populateDomainDropdowns() {
     const domainSelect = document.getElementById("appDomain");
@@ -3007,7 +3126,7 @@ function populateDomainDropdowns() {
         // Generate key competencies list
         const compListHtml = competencies.map(c => `
             <li>
-                <i class="fa-solid fa-check-double"></i>
+                <i class="fa-solid fa-circle-check" style="color: var(--gold-bright); font-size: 1rem;"></i>
                 <span>${c}</span>
             </li>
         `).join("");
@@ -3015,7 +3134,7 @@ function populateDomainDropdowns() {
         // Generate priority training topics list
         const topicsListHtml = priorityTopics.map(t => `
             <li>
-                <i class="fa-solid fa-book-open"></i>
+                <i class="fa-solid fa-book-bookmark" style="color: #38BDF8; font-size: 1rem;"></i>
                 <span>${t}</span>
             </li>
         `).join("");
@@ -3032,9 +3151,9 @@ function populateDomainDropdowns() {
                             <span class="dossier-badge">${badge}</span>
                         </div>
                     </div>
-                    <div style="font-size: 0.75rem; color: var(--gold-bright); display: flex; align-items: center; gap: 0.4rem;">
+                    <div style="font-size: 0.82rem; color: var(--gold-bright); font-weight: 700; display: flex; align-items: center; gap: 0.5rem; background: rgba(212, 175, 55, 0.12); border: 1px solid rgba(212, 175, 55, 0.35); padding: 0.35rem 0.85rem; border-radius: 999px;">
                         <i class="fa-solid fa-hand-pointer"></i>
-                        <span>${isAr ? 'انقر على أي تخصص فرعي لتحديده فورياً' : 'Click any specialty below to select it'}</span>
+                        <span>${isAr ? 'انقر على أي تخصص فرعي لتحديده فورياً' : 'Click any focus area below to select it'}</span>
                     </div>
                 </div>
 
@@ -3042,7 +3161,7 @@ function populateDomainDropdowns() {
 
                 <div class="dossier-subdisciplines-label">
                     <i class="fa-solid fa-sitemap"></i>
-                    <span>${isAr ? 'التخصصات الدقيقة المندرجة تحت هذا المجال (انقر للاختيار):' : 'Specific Specialties in This Area (Click to Select):'}</span>
+                    <span>${isAr ? 'التخصصات الدقيقة المندرجة تحت هذا المجال (انقر للاختيار):' : 'Specific Focus Areas in This Discipline (Click to Select):'}</span>
                 </div>
                 <div class="dossier-subdisciplines-pills" id="dossierPillsWrap">
                     ${subPillsHtml}
@@ -3051,8 +3170,13 @@ function populateDomainDropdowns() {
                 <div class="dossier-blueprint-grid">
                     <div class="blueprint-col">
                         <div class="blueprint-col-header">
-                            <i class="fa-solid fa-brain"></i>
-                            <span>${isAr ? 'الجدارات والمعارف الفنية المستهدفة بالمجال:' : 'Key Skills & Knowledge Required:'}</span>
+                            <span style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-brain" style="color: var(--gold-bright);"></i>
+                                <span>${isAr ? 'الجدارات والمعارف الفنية المستهدفة بالمجال:' : 'Key Skills & Required Competencies:'}</span>
+                            </span>
+                            <span style="font-size: 0.75rem; background: rgba(212, 175, 55, 0.18); border: 1px solid rgba(212, 175, 55, 0.4); color: var(--gold-bright); padding: 0.15rem 0.6rem; border-radius: 999px;">
+                                ${competencies.length} ${isAr ? 'جدارات' : 'Skills'}
+                            </span>
                         </div>
                         <ul class="blueprint-item-list">
                             ${compListHtml}
@@ -3061,8 +3185,13 @@ function populateDomainDropdowns() {
 
                     <div class="blueprint-col">
                         <div class="blueprint-col-header">
-                            <i class="fa-solid fa-graduation-cap"></i>
-                            <span>${isAr ? 'أولويات البرامج التدريبية المعتمدة للمدربين:' : 'Priority Training Topics for This Area:'}</span>
+                            <span style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-graduation-cap" style="color: #38BDF8;"></i>
+                                <span>${isAr ? 'أولويات البرامج التدريبية المعتمدة للمدربين:' : 'Priority Training Topics for This Area:'}</span>
+                            </span>
+                            <span style="font-size: 0.75rem; background: rgba(56, 189, 248, 0.18); border: 1px solid rgba(56, 189, 248, 0.4); color: #38BDF8; padding: 0.15rem 0.6rem; border-radius: 999px;">
+                                ${priorityTopics.length} ${isAr ? 'برامج' : 'Courses'}
+                            </span>
                         </div>
                         <ul class="blueprint-item-list">
                             ${topicsListHtml}
@@ -3070,37 +3199,41 @@ function populateDomainDropdowns() {
                     </div>
                 </div>
 
-                <!-- SPECIALTY REGISTRATION FILE + 120S VIDEO LINK + ALL ATTACHED FIELDS BAR INSIDE EVERY SPECIALTY -->
-                <div style="margin-top: 1.25rem; background: linear-gradient(135deg, rgba(212, 175, 55, 0.14), rgba(15, 23, 42, 0.92)); border: 1px solid rgba(212, 175, 55, 0.45); border-radius: 12px; padding: 1.1rem 1.25rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                        <div style="flex: 1; min-width: 260px;">
-                            <div style="font-weight: 800; color: var(--gold-bright); font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;">
-                                <i class="fa-solid fa-file-signature"></i>
-                                <span>${isAr ? `حقيبة واستمارة التسجيل الرسمية لتخصص (${title}) + رابط الفيديو التقديمي (120 ثانية)` : `Registration Package for (${title}) + 2-Minute Intro Video Link`}</span>
+                <!-- SPECIALTY REGISTRATION PACKAGE + 120S VIDEO LINK + ACTION BUTTONS -->
+                <div style="margin-top: 1.5rem; background: linear-gradient(135deg, rgba(14, 40, 73, 0.95), rgba(5, 17, 36, 0.98)); border: 2px solid rgba(212, 175, 55, 0.5); border-radius: 14px; padding: 1.35rem 1.6rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="flex: 1; min-width: 280px;">
+                            <div style="font-weight: 900; color: var(--gold-bright); font-size: 1.1rem; display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem;">
+                                <i class="fa-solid fa-box-archive"></i>
+                                <span>${isAr ? `الحقيبة واستمارة التسجيل الرسمية لتخصص (${title}) + رابط الفيديو التقديمي (120 ثانية)` : `Official Registration Package & 2-Minute Video Link: ${title}`}</span>
                             </div>
-                            <p style="margin: 0; font-size: 0.8rem; color: #E2E8F0; line-height: 1.5;">
+                            <p style="margin: 0; font-size: 0.9rem; color: #E2E8F0; line-height: 1.6;">
                                 ${isAr
-                                    ? `تتضمن هذه البطاقة ملف استمارة التسجيل الرسمي (Template Form for Expert Registration.docx)، ورابط الفيديو التقديمي المعتمد (120 ثانية)، والشهادات التخصصية (${certsList.slice(0, 3).join(' • ')})، وكافة الحقول الـ 10 المرفقة أدناه.`
-                                    : `Download the official Word Registration Form, get the 2-minute sample video link, view recommended certificates (${certsList.slice(0, 3).join(' • ')}), or fill the 7 suggested courses below.`}
+                                    ? `استمارة التقديم الرسمية (Template Form for Expert Registration.docx) ورابط نموذج الفيديو التقديمي المعتمد (120 ثانية)، والشهادات الموصى بها (${certsList.slice(0, 3).join(' • ')}).`
+                                    : `Download the official Word application form (.docx), watch or download the approved 2-minute introductory video pitch, and view recommended credentials (${certsList.slice(0, 3).join(' • ')}).`}
                             </p>
                         </div>
+                    </div>
 
-                        <div style="display: flex; gap: 0.55rem; flex-wrap: wrap; align-items: center;">
-                            <a href="assets/Template%20Form%20for%20Expert%20Registration.docx" download="Template_Form_for_Expert_Registration.docx" class="btn-primary-gold" style="padding: 0.5rem 0.95rem; font-size: 0.78rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;">
-                                <i class="fa-solid fa-file-word"></i>
-                                <span>${isAr ? 'تحميل فايل التسجيل للتخصص (DOCX)' : 'Download Registration Form (Word)'}</span>
-                            </a>
+                    <!-- 3 High-Visibility Action Buttons -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; margin-top: 0.85rem;">
+                        <!-- 1. Download Word Form -->
+                        <a href="assets/Template%20Form%20for%20Expert%20Registration.docx" download="Template_Form_for_Expert_Registration.docx" class="btn-primary-gold" style="padding: 0.75rem 1.15rem; font-size: 0.88rem; font-weight: 800; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.6rem; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);">
+                            <i class="fa-solid fa-file-word" style="font-size: 1.1rem;"></i>
+                            <span>${isAr ? 'تحميل استمارة التسجيل (Word)' : 'Download Word Form (.docx)'}</span>
+                        </a>
 
-                            <a href="video/sample-video.mp4" download="XpertGate_Pitch_120s.mp4" target="_blank" rel="noopener" class="btn-outline-gold" style="padding: 0.5rem 0.9rem; font-size: 0.78rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; color: #34D399; border-color: rgba(16, 185, 129, 0.5); background: rgba(16, 185, 129, 0.1);">
-                                <i class="fa-solid fa-video"></i>
-                                <span>${isAr ? 'رابط وتحميل فيديو الـ 120 ثانية' : '2-Min Sample Video Link & Download'}</span>
-                            </a>
+                        <!-- 2. Watch / Download 2-Min Video -->
+                        <button type="button" onclick="openPromoVideoModal()" class="btn-outline-gold" style="padding: 0.75rem 1.15rem; font-size: 0.88rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.6rem; color: #34D399; border-color: rgba(16, 185, 129, 0.6); background: rgba(16, 185, 129, 0.15);">
+                            <i class="fa-solid fa-play-circle" style="font-size: 1.1rem;"></i>
+                            <span>${isAr ? 'مشاهدة فيديو الـ 120 ثانية' : 'Watch 2-Min Pitch Video'}</span>
+                        </button>
 
-                            <button type="button" class="btn-outline-gold" style="padding: 0.5rem 0.9rem; font-size: 0.78rem;" onclick="fillSpecialtyProgramsAndScroll(true)">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                <span>${isAr ? 'تعبئة البرامج الـ 7 والانتقال للحقول' : 'Fill 7 Courses & Go to Form'}</span>
-                            </button>
-                        </div>
+                        <!-- 3. Auto-fill 7 Suggested Courses -->
+                        <button type="button" class="btn-outline-gold" style="padding: 0.75rem 1.15rem; font-size: 0.88rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.6rem; color: #38BDF8; border-color: rgba(56, 189, 248, 0.6); background: rgba(56, 189, 248, 0.12);" onclick="fillSpecialtyProgramsAndScroll(true)">
+                            <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 1.1rem;"></i>
+                            <span>${isAr ? 'تعبئة البرامج الـ 7 وبدء الاستمارة' : 'Fill 7 Courses & Start Form'}</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -3231,6 +3364,7 @@ function initApplicantIntakeForm() {
             setVal("appCompany", "ENPPI");
             setVal("appDepartment", isAr ? "الإدارة العامة لهندسة العمليات والتحول الطاقي" : "General Directorate of Process & Energy Transition");
             setVal("appJobTitle", isAr ? "مدير عام هندسة العمليات واستشاري أول معتمد" : "General Manager of Process Engineering & Senior Advisor");
+            setVal("appDirectManager", isAr ? "م. خالد عبد الرحمن — نائب رئيس الشركة للعمليات" : "Eng. Khaled Abdelrahman — VP of Operations");
             setVal("appHrEmail", "hr@enppi.com.eg");
             setVal("appCareerPositions", isAr 
                 ? "مهندس عمليات أول (2002-2010) -> مدير قسم المحاكاة المتقدمة (2010-2018) -> مدير عام هندسة العمليات والتحول الطاقي بإنبي (2018-الآن)" 
@@ -3443,6 +3577,7 @@ function initApplicantIntakeForm() {
             const company = val("appCompany");
             const department = val("appDepartment");
             const jobTitle = val("appJobTitle");
+            const directManager = val("appDirectManager");
             const hrEmail = val("appHrEmail");
             const careerPositions = val("appCareerPositions");
             const cohort = val("appCohort") || "Cohort A";
@@ -3543,6 +3678,7 @@ function initApplicantIntakeForm() {
                 linkedIn,
                 website,
                 department,
+                directManager,
                 hrEmail,
                 careerPositions,
                 availability,
@@ -3576,6 +3712,7 @@ function initApplicantIntakeForm() {
                 fullNameAr: fullName,
                 email: email,
                 jobTitle: jobTitle,
+                directManager: directManager,
                 company: company,
                 cohort: cohort,
                 cohortDescEn: cohort === "Cohort A" ? "Group A: Current Sector Employee" : "Group B: Retired Expert / Consultant",
@@ -4279,19 +4416,30 @@ const PromoVideoPlayer = {
     }
 };
 
-// Global Launchers
+// Global Launchers for Real Project Video
 function openPromoVideoModal() {
     const modal = document.getElementById("promoVideoModal");
+    const video = document.getElementById("modalPromoVideoPlayer");
     if (!modal) return;
     modal.style.display = "flex";
-    PromoVideoPlayer.init();
-    PromoVideoPlayer.play();
+    if (video) {
+        video.currentTime = 0;
+        video.play().catch(err => {
+            console.log("Auto-play prevented or user interaction required:", err);
+        });
+    }
 }
 
 function closePromoVideoModal() {
     const modal = document.getElementById("promoVideoModal");
+    const video = document.getElementById("modalPromoVideoPlayer");
     if (modal) modal.style.display = "none";
-    PromoVideoPlayer.pause();
+    if (video) {
+        video.pause();
+    }
 }
+
+window.openPromoVideoModal = openPromoVideoModal;
+window.closePromoVideoModal = closePromoVideoModal;
 
 

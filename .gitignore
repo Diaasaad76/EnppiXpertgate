@@ -13,3 +13,6 @@ Desktop.ini
 node_modules/
 *.log
 scratch/
+
+# Local backup snapshots (kept safely on local disk)
+backup_*/

@@ -1914,9 +1914,18 @@ const XG_COMMITTEE_MATRIX = {
 };
 
 if (typeof window !== 'undefined') {
+    window.PETROLEUM_DOMAINS = PETROLEUM_DOMAINS;
     window.BENCHMARK_SECTOR_CANDIDATES = BENCHMARK_SECTOR_CANDIDATES;
     window.initialCandidates = initialCandidates;
     window.WORKFLOW_PHASES = WORKFLOW_PHASES;
     window.ROADMAP_STAGES = ROADMAP_STAGES;
     window.XG_COMMITTEE_MATRIX = XG_COMMITTEE_MATRIX;
+}
+if (typeof global !== 'undefined') {
+    global.PETROLEUM_DOMAINS = PETROLEUM_DOMAINS;
+    global.BENCHMARK_SECTOR_CANDIDATES = BENCHMARK_SECTOR_CANDIDATES;
+    global.initialCandidates = initialCandidates;
+    global.WORKFLOW_PHASES = WORKFLOW_PHASES;
+    global.ROADMAP_STAGES = ROADMAP_STAGES;
+    global.XG_COMMITTEE_MATRIX = XG_COMMITTEE_MATRIX;
 }
