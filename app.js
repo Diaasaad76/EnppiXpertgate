@@ -2033,7 +2033,7 @@ function renderScreeningTable() {
                 </span>
             </td>
             <td style="font-size: 0.78rem; color: #CBD5E1; max-width: 240px;">${scope}</td>
-            <td style="text-align: center; white-space: nowrap; min-width: 140px; padding: 0.65rem 0.5rem;">
+            <td style="text-align: center; white-space: nowrap; min-width: 155px; width: 155px; padding: 0.65rem 0.65rem;">
                 <div style="display: inline-flex; gap: 0.35rem; align-items: center; justify-content: center; flex-wrap: nowrap; white-space: nowrap;">
                     <button class="btn-primary-gold" style="padding: 0.35rem 0.65rem; font-size: 0.75rem; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.35rem;" onclick="loadCandidateForEvaluation('${cand.id}')" title="${isAr ? 'عرض في استمارة التحكيم' : 'Review in Rubric'}">
                         <i class="fa-solid fa-clipboard-check"></i> <span>${isAr ? 'تقييم' : 'Rubric'}</span>

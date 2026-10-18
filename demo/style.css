@@ -79,7 +79,8 @@ html[lang="ar"] body {
 }
 
 .header-container {
-    max-width: 1600px;
+    max-width: 1820px;
+    width: 96%;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -399,9 +400,10 @@ html[lang="ar"] body {
 
 /* Main Container & View System */
 .main-content {
-    max-width: 1600px;
+    max-width: 1820px;
+    width: 96%;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 2rem 1rem;
 }
 
 .view-section {
@@ -1314,26 +1316,41 @@ html[lang="ar"] .enterprise-table {
 }
 
 /* Screening Candidates Table & Visible Action Buttons */
+.eval-results-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    margin-inline: auto;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 #screeningCandidatesTable {
+    width: 100%;
     min-width: 1050px;
 }
 
 #screeningCandidatesTable th {
-    padding: 0.75rem 0.65rem;
-    font-size: 0.75rem;
+    padding: 0.65rem 0.5rem;
+    font-size: 0.74rem;
     white-space: nowrap;
 }
 
 #screeningCandidatesTable td {
-    padding: 0.75rem 0.65rem;
+    padding: 0.65rem 0.5rem;
+    font-size: 0.8rem;
 }
 
 #screeningCandidatesTable th:last-child,
 #screeningCandidatesTable td:last-child {
-    min-width: 145px;
-    width: 145px;
-    padding-inline-end: 0.85rem;
+    min-width: 155px;
+    width: 155px;
+    padding-inline-end: 1rem;
     white-space: nowrap;
+    text-align: center;
 }
 
 /* Candidate Quick Pill */

@@ -117,6 +117,7 @@ The application features a responsive, role-based single-page architecture with 
 | `backup_before_direct_manager_field_20261018` | 2026-10-18 18:08 | Snapshot before adding Direct Manager field to Section 3 |
 | `backup_before_executive_dropdown_20261018` | 2026-10-18 18:21 | Snapshot before adding Executive Overview dropdown menu & Register label |
 | `backup_before_rubric_table_overflow_fix_20261018` | 2026-10-18 19:30 | Snapshot before Candidate Table Rubric button overflow & width fix |
+| `backup_enlarge_rubric_box_20261018` | 2026-10-18 20:00 | Enlarged main-content and table container box so Rubric button and Action column are fully displayed |
 
 ---
 
