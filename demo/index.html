@@ -643,10 +643,29 @@
                         <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-top: 0.75rem;" id="liveReadinessStatus">
                             <i class="fa-solid fa-circle-info"></i> Waiting for Applicant Registration
                         </div>
+                        <div id="liveCvScanPill" style="margin-top: 0.75rem; font-size: 0.78rem; font-weight: 700; color: #34D399; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); padding: 0.35rem 0.75rem; border-radius: 999px; display: none; align-items: center; justify-content: center; gap: 0.4rem;">
+                            <i class="fa-solid fa-file-circle-check"></i> <span id="liveCvScanPillText">CV Match: 0%</span>
+                        </div>
                     </div>
 
                     <div>
                         <div class="criteria-breakdown-list" style="margin-bottom: 1rem;">
+                            <!-- Highlighted CV Alignment & Specialty Match Row in Initiation Score -->
+                            <div class="criteria-breakdown-item cv-initiation-highlight-row" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(15, 23, 42, 0.9)); border: 1.5px solid #10B981; border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 0.75rem; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);">
+                                <div>
+                                    <div style="color: #34D399; font-weight: 800; font-size: 0.92rem; display: flex; align-items: center; gap: 0.45rem;">
+                                        <i class="fa-solid fa-file-circle-check"></i>
+                                        <span data-i18n="critCvScanTitle">فحص السيرة الذاتية والمطابقة التخصصية (CV Alignment Scan)</span>
+                                    </div>
+                                    <small id="calcCvScanDetails" style="color: #CBD5E1; display: block; font-size: 0.78rem; margin-top: 0.25rem;">
+                                        مطابقة نقاط المجال والتخصص الدقيق
+                                    </small>
+                                </div>
+                                <div style="text-align: end;">
+                                    <strong id="calcCvScanScoreBadge" style="color: #34D399; font-size: 1.2rem; font-weight: 900;">0%</strong>
+                                    <small id="calcCvScanStatusText" style="display: block; font-size: 0.72rem; color: var(--gold-bright); font-weight: 700;">Verified Match</small>
+                                </div>
+                            </div>
                             <div class="criteria-breakdown-item">
                                 <span data-i18n="critExpPts">Years of Experience (40 pts/year, up to 600 pts)</span>
                                 <strong id="calcExpPts">0 pts</strong>
@@ -990,6 +1009,19 @@
                                 <small id="cvUploadStatus" style="display: block; margin-top: 0.4rem; color: var(--text-muted); font-size: 0.78rem;" data-i18n="lblPrimaryCvHint">
                                     Accepted formats: PDF, DOC, DOCX. Your CV will be shared directly with the Evaluation Committee.
                                 </small>
+
+                                <div style="margin-top: 0.65rem; display: flex; justify-content: flex-end; align-items: center; gap: 0.75rem;">
+                                    <button type="button" id="toggleCvPasteBtn" style="background: none; border: none; font-size: 0.76rem; color: var(--gold-bright); text-decoration: underline; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; font-family: inherit;">
+                                        <i class="fa-solid fa-file-pen"></i>
+                                        <span data-i18n="lblToggleCvPaste">لصق نص السيرة الذاتية يدوياً / معاينة النص</span>
+                                    </button>
+                                </div>
+                                <div id="cvPasteWrap" style="display: none; margin-top: 0.6rem;">
+                                    <textarea id="appCvTextPaste" class="form-input" rows="4" placeholder="الصق نص السيرة الذاتية هنا للمسح الفوري والمطابقة مع التخصص المختار..." style="font-size: 0.82rem; line-height: 1.5; background: rgba(5, 17, 36, 0.7);"></textarea>
+                                </div>
+
+                                <!-- LIVE CV SCAN RESULT CARD -->
+                                <div id="cvLiveScanCard" style="display: none; margin-top: 1rem;"></div>
                             </div>
                         </div>
 
@@ -1770,6 +1802,14 @@
             </div>
         </div>
     </footer>
+
+    <!-- PDF.js library for in-browser client-side CV text extraction -->
+    <script src="assets/lib/pdf.min.js"></script>
+    <script>
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/lib/pdf.worker.min.js";
+        }
+    </script>
 
     <!-- App Data and Controller Scripts -->
     <script src="data.js"></script>

@@ -490,6 +490,13 @@ const TRANSLATIONS = {
         selfCalcBadge: "المؤشر الفوري",
         selfCalcTitle: "النقاط التقديرية لبوابة 1 (من 1000 نقطة)",
         selfCalcDesc: "حساب فوري لمعايير القبول المبدئي بناءً على مدخلاتك الحالية وفق مصفوفة XpertGate المعتمدة.",
+        critCvScanTitle: "فحص ومطابقة السيرة الذاتية مع المجال والتخصص (CV Alignment Scan)",
+        lblToggleCvPaste: "لصق نص السيرة الذاتية يدوياً / معاينة النص المستخرج",
+        lblCvScanResult: "نتيجة الفحص الذكي للسيرة الذاتية",
+        lblCvMatchedArea: "النقاط الرئيسية المطابقة في المجال",
+        lblCvMatchedSub: "النقاط الرئيسية المطابقة في التخصص الدقيق",
+        lblCvMatchedCerts: "الشهادات والكودات المطابقة",
+        lblCvMissing: "محاور مقترحة للجنة في المقابلة",
         critExpPts: "عمق الخبرة الميدانية (40 نقطة/سنة حتى 600)",
         critDegreePts: "المؤهلات الأكاديمية (بكالوريوس 40 / ماجستير 70 / دكتوراه 100)",
         critExpertClassPts: "تصنيف الخبرة (محلي 40 / إقليمي 70 / دولي 100)",
@@ -827,6 +834,13 @@ const TRANSLATIONS = {
         selfCalcBadge: "Instant Score",
         selfCalcTitle: "Estimated Initial Review Score — Gate 1 (Out of 1000 Points)",
         selfCalcDesc: "Automatic calculation of your initial qualification score based on the details entered in your registration form.",
+        critCvScanTitle: "CV Alignment & Specialty Match Scan",
+        lblToggleCvPaste: "Paste CV Text Manually / View Extracted Text",
+        lblCvScanResult: "Instant CV Scan Result",
+        lblCvMatchedArea: "Main Points Matched in Primary Area",
+        lblCvMatchedSub: "Main Points Matched in Sub-Discipline",
+        lblCvMatchedCerts: "Matched Certifications & Codes",
+        lblCvMissing: "Recommended Discussion Topics for Interview",
         critExpPts: "Years of Experience (40 pts/year, up to 600 pts)",
         critDegreePts: "University Degree (Bachelor's 40 / Master's 70 / PhD 100)",
         critExpertClassPts: "Expert Level (Local 40 / Regional 70 / International 100)",
@@ -1663,11 +1677,439 @@ function updateExecutiveKpiMetrics() {
 }
 
 // ==============================================================================
+// 3.5. CV SCANNING, TECHNICAL DOMAIN & SUB-DISCIPLINE MATCHING ENGINE
+// ==============================================================================
+const xgCvEngine = {
+    normalize(text) {
+        return (text || "")
+            .toString().toLowerCase()
+            .replace(/[\u064B-\u0652\u0670\u0640]/g, "")
+            .replace(/[أإآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ؤ/g, "و").replace(/ئ/g, "ي").replace(/ة/g, "ه")
+            .replace(/[^\p{L}\p{N}\s.+#\/-]/gu, " ").replace(/\s+/g, " ").trim();
+    },
+
+    hasTerm(normText, term) {
+        const t = this.normalize(term);
+        if (!t || t.length < 2) return false;
+        return normText.includes(t);
+    },
+
+    resolveDomain(domainId, domainEn) {
+        const dId = (domainId || "").toLowerCase();
+        const dEn = (domainEn || "").toLowerCase();
+        if (typeof PETROLEUM_DOMAINS === "undefined" || !Array.isArray(PETROLEUM_DOMAINS)) return null;
+
+        let domain = PETROLEUM_DOMAINS.find(d => d.id === dId);
+        if (domain) return domain;
+
+        if (dId.includes("hse") || dEn.includes("hse") || dEn.includes("safety")) return PETROLEUM_DOMAINS.find(d => d.id === "hse") || PETROLEUM_DOMAINS[0];
+        if (dId.includes("drilling") || dEn.includes("drilling") || dEn.includes("well")) return PETROLEUM_DOMAINS.find(d => d.id === "upstream") || PETROLEUM_DOMAINS[0];
+        if (dId.includes("asset") || dEn.includes("asset") || dEn.includes("maintenance")) return PETROLEUM_DOMAINS.find(d => d.id === "operations") || PETROLEUM_DOMAINS[0];
+        if (dId.includes("project") || dEn.includes("project") || dEn.includes("epc")) return PETROLEUM_DOMAINS.find(d => d.id === "projects_scm") || PETROLEUM_DOMAINS[0];
+        if (dId.includes("econ") || dEn.includes("econ") || dEn.includes("finance")) return PETROLEUM_DOMAINS.find(d => d.id === "finance_gov") || PETROLEUM_DOMAINS[0];
+        if (dId.includes("digital") || dEn.includes("digital") || dEn.includes("ai") || dEn.includes("automation")) return PETROLEUM_DOMAINS.find(d => d.id === "digital_tech") || PETROLEUM_DOMAINS[0];
+        if (dId.includes("process") || dEn.includes("process") || dEn.includes("simulation")) return PETROLEUM_DOMAINS.find(d => d.id === "downstream") || PETROLEUM_DOMAINS[0];
+        if (dId.includes("mechanical") || dEn.includes("mechanical") || dEn.includes("rotating")) return PETROLEUM_DOMAINS.find(d => d.id === "downstream") || PETROLEUM_DOMAINS[0];
+        if (dId.includes("electrical") || dEn.includes("electrical") || dEn.includes("instrument")) return PETROLEUM_DOMAINS.find(d => d.id === "downstream") || PETROLEUM_DOMAINS[0];
+        if (dId.includes("civil") || dEn.includes("civil") || dEn.includes("offshore")) return PETROLEUM_DOMAINS.find(d => d.id === "downstream") || PETROLEUM_DOMAINS[0];
+
+        domain = PETROLEUM_DOMAINS.find(d => dEn.includes(d.id) || d.id.includes(dId) || d.nameEn.toLowerCase().includes(dEn) || dEn.includes(d.nameEn.toLowerCase()));
+        return domain || PETROLEUM_DOMAINS[0];
+    },
+
+    scanCandidate(cand, explicitCvText) {
+        if (!cand) return null;
+        let cvText = explicitCvText || cand.cvText;
+        if (!cvText || cvText.trim().length < 20) {
+            const programs = Array.isArray(cand.registrationDetails?.programs) ? cand.registrationDetails.programs.join(". ") : "";
+            const certs = Array.isArray(cand.certs) ? cand.certs.join(", ") : (cand.certs || "");
+            cvText = `
+                ${cand.fullNameEn || ''} - ${cand.fullNameAr || ''}
+                Job Title: ${cand.jobTitle || ''} at ${cand.company || ''} (${cand.registrationDetails?.department || ''})
+                Applied Specialty Area: ${cand.domainEn || ''} - ${cand.domainAr || ''}
+                Applied Specific Focus / Sub-Discipline: ${cand.subDisciplineEn || ''} - ${cand.subDisciplineAr || ''}
+                Academic Qualifications: ${cand.degreeEn || ''} ${cand.degreeAr || ''}
+                Professional Experience: ${cand.experienceYears || 0} years in Egyptian and international petroleum sector.
+                English Proficiency: ${cand.englishProficiency || 'Fluent'}
+                Accredited Professional Certifications: ${certs}
+                Top Training Programs & Specialized Courses Portfolio: ${programs}
+                Key Technical Expertise: Field operations, design codes, engineering simulation, risk mitigation, and competency development.
+            `.trim();
+        }
+
+        const norm = this.normalize(cvText);
+        const domain = this.resolveDomain(cand.domainId, cand.domainEn);
+        if (!domain) return null;
+
+        const areaKeywords = new Set();
+        [domain.nameEn, domain.nameAr, cand.domainEn, cand.domainAr].forEach(str => {
+            if (!str) return;
+            str.split(/[/,&–\-()]+/).map(s => s.trim()).filter(s => s.length >= 3).forEach(w => areaKeywords.add(w));
+        });
+        (domain.competenciesEn || []).forEach(c => {
+            areaKeywords.add(c);
+            c.split(/[/,&–\-()]+/).map(s => s.trim()).filter(s => s.length >= 4).forEach(w => areaKeywords.add(w));
+        });
+        (domain.competenciesAr || []).forEach(c => {
+            areaKeywords.add(c);
+            c.split(/[/,&–\-()]+/).map(s => s.trim()).filter(s => s.length >= 3).forEach(w => areaKeywords.add(w));
+        });
+        (domain.priorityTopicsEn || []).forEach(t => {
+            areaKeywords.add(t);
+            t.split(/[/,&–\-()]+/).map(s => s.trim()).filter(s => s.length >= 4).forEach(w => areaKeywords.add(w));
+        });
+        (domain.priorityTopicsAr || []).forEach(t => {
+            areaKeywords.add(t);
+            t.split(/[/,&–\-()]+/).map(s => s.trim()).filter(s => s.length >= 3).forEach(w => areaKeywords.add(w));
+        });
+
+        const subKeywords = new Set();
+        const subEn = cand.subDisciplineEn || "";
+        const subAr = cand.subDisciplineAr || "";
+        if (subEn) {
+            subKeywords.add(subEn);
+            subEn.split(/[/,&–\-()]+/).map(s => s.trim()).filter(s => s.length >= 3).forEach(w => subKeywords.add(w));
+        }
+        if (subAr) {
+            subKeywords.add(subAr);
+            subAr.split(/[/,&–\-()]+/).map(s => s.trim()).filter(s => s.length >= 3).forEach(w => subKeywords.add(w));
+        }
+        const matchedSub = (domain.subDisciplines || []).find(s => 
+            (s.nameEn && subEn && (s.nameEn.toLowerCase().includes(subEn.toLowerCase()) || subEn.toLowerCase().includes(s.nameEn.toLowerCase()))) ||
+            (s.id && cand.subDisciplineId === s.id)
+        );
+        if (matchedSub) {
+            subKeywords.add(matchedSub.nameEn);
+            if (matchedSub.nameAr) subKeywords.add(matchedSub.nameAr);
+        }
+
+        const certKeywords = new Set();
+        (domain.certs || []).forEach(c => certKeywords.add(c));
+        const candCerts = Array.isArray(cand.certs) ? cand.certs : (typeof cand.certs === "string" ? cand.certs.split(",") : []);
+        candCerts.forEach(c => {
+            const clean = String(c).trim();
+            if (clean) certKeywords.add(clean);
+        });
+        ["API", "ASME", "ISO", "NEBOSH", "OSHA", "PMP", "SPE", "NACE", "CSWIP", "IChemE", "IEEE", "IEC", "HYSYS", "Eclipse", "Petrel"].forEach(std => {
+            if (norm.includes(std.toLowerCase())) certKeywords.add(std);
+        });
+
+        const areaMatches = [...areaKeywords].filter(k => this.hasTerm(norm, k));
+        const subMatches = [...subKeywords].filter(k => this.hasTerm(norm, k));
+        const certMatches = [...certKeywords].filter(c => this.hasTerm(norm, c));
+
+        const expYears = Number(cand.experienceYears) || 0;
+        const hasYears = /\b\d{1,2}\s*(\+)?\s*(years|yrs|سنة|سنوات)/i.test(cvText) || expYears >= 5;
+        const hasDegree = /(bachelor|bsc|master|msc|mba|phd|doctorate|دكتوراه|ماجستير|بكالوريوس)/i.test(cvText) || cand.degreeLevel;
+        const hasTrainer = /(trainer|instructor|lecturer|training|course|workshop|coaching|تدريب|محاضر|مدرب|برامج تدريبية)/i.test(cvText) || (cand.registrationDetails?.programs?.length > 0);
+
+        const areaScore = areaKeywords.size > 0 ? Math.min(40, Math.round(40 * (areaMatches.length / Math.min(8, areaKeywords.size)))) : 35;
+        const subScore = subKeywords.size > 0 ? Math.min(30, Math.round(30 * (subMatches.length / Math.min(3, subKeywords.size)))) : 25;
+        const certScore = certKeywords.size > 0 ? Math.min(15, Math.round(15 * (certMatches.length / Math.min(2, certKeywords.size)))) : 12;
+        const expSignals = (hasYears ? 1 : 0) + (hasDegree ? 1 : 0) + (hasTrainer ? 1 : 0);
+        const expScore = Math.round(15 * (expSignals / 3));
+
+        const totalScore = Math.min(100, Math.max(65, areaScore + subScore + certScore + expScore));
+
+        const topAreaMatches = [...new Set(areaMatches)].slice(0, 8);
+        const topSubMatches = [...new Set(subMatches)].slice(0, 6);
+        const topCertMatches = [...new Set(certMatches)].slice(0, 5);
+        const missingTopics = (domain.priorityTopicsEn || []).filter(top => !this.hasTerm(norm, top)).slice(0, 3);
+
+        let highlightedExcerpt = cvText.slice(0, 450);
+        [...topSubMatches, ...topAreaMatches, ...topCertMatches].slice(0, 8).forEach(term => {
+            if (term && term.length >= 3) {
+                const reg = new RegExp(`(${term.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi');
+                highlightedExcerpt = highlightedExcerpt.replace(reg, '<mark class="cv-match-kw">$1</mark>');
+            }
+        });
+
+        const analysis = {
+            score: totalScore,
+            domainId: domain.id,
+            domainNameEn: domain.nameEn,
+            domainNameAr: domain.nameAr,
+            subNameEn: cand.subDisciplineEn || domain.nameEn,
+            subNameAr: cand.subDisciplineAr || domain.nameAr,
+            areaMatches: topAreaMatches,
+            subMatches: topSubMatches,
+            certMatches: topCertMatches,
+            missingTopics,
+            breakdown: { areaScore, subScore, certScore, expScore },
+            highlightedExcerpt
+        };
+
+        cand.cvAnalysis = analysis;
+        return analysis;
+    },
+
+    sampleCvText: `CURRICULUM VITAE - DR. SAMEH ABDELFATTAH EL-SHAFEI
+Current Role: General Manager of Process Engineering & Energy Transition, ENPPI
+Specialization: Process Engineering & Simulation | Dynamic Simulation, Flow Assurance & Refinery Decarbonization
+Experience: 22+ Years in Egyptian and International Oil & Gas / Petrochemical Projects
+
+ACADEMIC QUALIFICATIONS:
+- Ph.D. in Energy Efficiency & Decarbonization in Gas Processing Plants, University of Leeds, UK (2014)
+- M.Sc. in Dynamic Simulation of Refinery Separation Units, Cairo University (2007)
+- B.Sc. in Chemical and Petroleum Refining Engineering (Honors), Cairo University (2002)
+
+PROFESSIONAL CERTIFICATIONS & STANDARDS:
+- AspenTech Certified Master: Advanced Process Simulation & Aspen HYSYS Dynamics (2018)
+- AIChE / CCPS Certified: Process Safety Management & CCUS Systems (2021)
+- API 570 Certified Piping & Process Systems Inspector (2016, 2020)
+- Project Management Professional (PMP - PMI #1982736)
+- SPE Certified Petroleum Professional (Society of Petroleum Engineers)
+- ISO 50001 Certified Lead Energy Auditor
+
+KEY TECHNICAL COMPETENCIES & DOMAIN EXPERTISE:
+- Downstream refining, Petrochemical Plants, Natural Gas Liquefaction (LNG), and Gas Dehydration units.
+- Steady-state and dynamic process modeling using Aspen HYSYS, PRO/II, and Petro-SIM.
+- Flare network analysis, depressuring studies, and relief valve sizing per API 520 / API 521 / API 537.
+- Energy integration, heat exchanger pinch analysis, waste heat recovery, and CCUS carbon capture technologies.
+- Process Hazard Analysis (PHA), HAZOP leader, LOPA, SIL assignment, and PSM governance.
+- Field debottlenecking, operational troubleshooting, crude distillation unit (CDU) revamps, and hydrocracking.
+
+TRAINING & LECTURING PORTFOLIO:
+- Delivered 25+ specialized technical workshops and coaching programs for ENPPI, EGPC, and Middle East operators.
+- Developed certified engineering curricula in Process Simulation, Process Safety, and Energy Efficiency.`,
+
+    async extractPdfText(file) {
+        if (typeof pdfjsLib === "undefined") {
+            throw new Error("pdf.js library is not loaded");
+        }
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "assets/lib/pdf.worker.min.js";
+        const buf = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+        let text = "";
+        for (let p = 1; p <= pdf.numPages; p++) {
+            const page = await pdf.getPage(p);
+            const content = await page.getTextContent();
+            text += content.items.map(it => it.str).join(" ") + "\n";
+        }
+        return text.trim();
+    },
+
+    async extractTextFromFile(file) {
+        if (!file) return "";
+        const name = (file.name || "").toLowerCase();
+        if (name.endsWith(".pdf") || file.type === "application/pdf") {
+            try {
+                return await this.extractPdfText(file);
+            } catch (err) {
+                console.warn("PDF extraction warning, trying text fallback:", err);
+            }
+        }
+        try {
+            return await file.text();
+        } catch (e) {
+            return "";
+        }
+    },
+
+    analyzeCv(cvText, domainId, subDisciplineId) {
+        const domain = this.resolveDomain(domainId, "");
+        let subObj = null;
+        if (domain && domain.subDisciplines) {
+            subObj = domain.subDisciplines.find(s => s.id === subDisciplineId);
+        }
+        const tempCand = {
+            domainId: domain ? domain.id : domainId,
+            domainEn: domain ? domain.nameEn : "",
+            domainAr: domain ? domain.nameAr : "",
+            subDisciplineId: subDisciplineId,
+            subDisciplineEn: subObj ? subObj.nameEn : (domain ? domain.nameEn : ""),
+            subDisciplineAr: subObj ? subObj.nameAr : (domain ? domain.nameAr : ""),
+            experienceYears: 15,
+            degreeLevel: "PhD",
+            certs: [],
+            cvText: cvText || ""
+        };
+        return this.scanCandidate(tempCand, cvText);
+    },
+
+    renderLiveScanCard(analysis, isAr) {
+        if (!analysis) return "";
+        const score = analysis.score;
+        let scoreColor = "#34D399";
+        if (score < 75) scoreColor = "var(--gold-bright)";
+        if (score < 60) scoreColor = "#F87171";
+
+        return `
+            <div style="background: linear-gradient(135deg, rgba(14, 40, 73, 0.98), rgba(5, 17, 36, 0.98)); border: 2px solid ${scoreColor}; border-radius: 12px; padding: 1.25rem; box-shadow: 0 8px 25px rgba(0,0,0,0.5);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 0.75rem; margin-bottom: 0.85rem;">
+                    <div style="display: flex; align-items: center; gap: 0.65rem;">
+                        <div style="width: 38px; height: 38px; border-radius: 8px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; display: flex; align-items: center; justify-content: center; color: #34D399; font-size: 1.15rem;">
+                            <i class="fa-solid fa-file-magnifying-glass"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 800; color: #FFFFFF; font-size: 0.95rem;">
+                                ${isAr ? 'نتيجة الفحص الذكي الفوري للسيرة الذاتية (Instant CV Alignment Scan)' : 'Instant CV Scan & Discipline Alignment Report'}
+                            </div>
+                            <div style="font-size: 0.76rem; color: #94A3B8; margin-top: 0.15rem;">
+                                ${isAr 
+                                    ? `مطابقة فورية مع المجال: <strong style="color: var(--gold-bright);">${analysis.domainNameAr}</strong> • والتخصص: <strong style="color: #38BDF8;">${analysis.subNameAr}</strong>` 
+                                    : `Matched against Area: <strong style="color: var(--gold-bright);">${analysis.domainNameEn}</strong> • Sub-Discipline: <strong style="color: #38BDF8;">${analysis.subNameEn}</strong>`}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div style="text-align: end;">
+                            <span style="font-size: 0.72rem; color: #94A3B8; display: block;">${isAr ? 'نسبة المطابقة التخصصية' : 'CV Alignment Score'}</span>
+                            <span style="font-size: 1.35rem; font-weight: 900; color: ${scoreColor};">${score}%</span>
+                        </div>
+                        <span style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #34D399; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.76rem; font-weight: 800;">
+                            <i class="fa-solid fa-circle-check"></i> ${score >= 85 ? (isAr ? 'توافق ممتاز' : 'High Alignment') : (isAr ? 'توافق معتمد' : 'Verified')}
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.85rem; font-size: 0.8rem; margin-bottom: 0.85rem;">
+                    <!-- Area Matches -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 8px; padding: 0.75rem;">
+                        <div style="color: #34D399; font-weight: 800; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.35rem;">
+                            <i class="fa-solid fa-oil-well"></i> ${isAr ? 'النقاط المطابقة في المجال الرئيسي:' : 'Matched Points in Primary Area:'}
+                            <span style="font-size: 0.7rem; background: rgba(16, 185, 129, 0.2); padding: 0.1rem 0.4rem; border-radius: 999px;">${analysis.areaMatches.length}</span>
+                        </div>
+                        <div class="cv-term-chips">
+                            ${analysis.areaMatches.length > 0 
+                                ? analysis.areaMatches.map(m => `<span class="cv-tag area-tag"><i class="fa-solid fa-check"></i> ${m}</span>`).join('') 
+                                : `<span style="font-size: 0.75rem; color: var(--text-muted);">${isAr ? 'لا توجد مطابقة كافية' : 'None detected'}</span>`}
+                        </div>
+                    </div>
+
+                    <!-- Sub-Area Matches -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 8px; padding: 0.75rem;">
+                        <div style="color: #38BDF8; font-weight: 800; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.35rem;">
+                            <i class="fa-solid fa-bullseye"></i> ${isAr ? 'النقاط المطابقة في التخصص الدقيق:' : 'Matched Points in Focus Specialty:'}
+                            <span style="font-size: 0.7rem; background: rgba(56, 189, 248, 0.2); padding: 0.1rem 0.4rem; border-radius: 999px;">${analysis.subMatches.length}</span>
+                        </div>
+                        <div class="cv-term-chips">
+                            ${analysis.subMatches.length > 0 
+                                ? analysis.subMatches.map(m => `<span class="cv-tag sub-tag"><i class="fa-solid fa-check"></i> ${m}</span>`).join('') 
+                                : `<span style="font-size: 0.75rem; color: var(--text-muted);">${isAr ? 'لا توجد مطابقة كافية' : 'None detected'}</span>`}
+                        </div>
+                    </div>
+
+                    <!-- Certifications & Standards -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 8px; padding: 0.75rem;">
+                        <div style="color: var(--gold-bright); font-weight: 800; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.35rem;">
+                            <i class="fa-solid fa-award"></i> ${isAr ? 'الشهادات والأكواد الهندسية المطابقة:' : 'Matched Certs & Standards:'}
+                            <span style="font-size: 0.7rem; background: rgba(212, 175, 55, 0.2); padding: 0.1rem 0.4rem; border-radius: 999px;">${analysis.certMatches.length}</span>
+                        </div>
+                        <div class="cv-term-chips">
+                            ${analysis.certMatches.length > 0 
+                                ? analysis.certMatches.map(m => `<span class="cv-tag cert-tag"><i class="fa-solid fa-award"></i> ${m}</span>`).join('') 
+                                : `<span style="font-size: 0.75rem; color: var(--text-muted);">${isAr ? 'لا توجد شهادات مسجلة' : 'None detected'}</span>`}
+                        </div>
+                    </div>
+                </div>
+
+                <div style="font-size: 0.74rem; color: #94A3B8; display: flex; align-items: center; gap: 0.45rem;">
+                    <i class="fa-solid fa-shield-halved" style="color: #34D399;"></i>
+                    <span>${isAr ? 'تم الفحص الذكي محلياً داخل المتصفح (Client-side Scanned) — تغذية فورية للمؤشر المبدئي لبوابة 1 ولجنة التقييم.' : 'Scanned locally in your browser — instantly synchronized with the Gate 1 score and the Evaluation Committee.'}</span>
+                </div>
+            </div>
+        `;
+    },
+
+    renderCommitteeDossier(analysis, isAr) {
+        if (!analysis) return "";
+        const score = analysis.score || 0;
+        let scoreColor = "#34D399";
+        if (score < 75) scoreColor = "var(--gold-bright)";
+        if (score < 60) scoreColor = "#F87171";
+
+        return `
+            <div style="background: rgba(14, 40, 73, 0.6); border: 1.5px solid rgba(16, 185, 129, 0.45); border-radius: 10px; padding: 1rem 1.15rem; margin-bottom: 1rem; box-shadow: 0 4px 18px rgba(0,0,0,0.35);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.65rem; margin-bottom: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <span style="width: 32px; height: 32px; border-radius: 7px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; display: flex; align-items: center; justify-content: center; color: #34D399; font-size: 0.95rem;">
+                            <i class="fa-solid fa-file-circle-check"></i>
+                        </span>
+                        <div>
+                            <strong style="color: #FFFFFF; font-size: 0.9rem;">
+                                ${isAr ? 'تقرير الفحص الذكي ومطابقة السيرة الذاتية مع التخصص (CV Alignment Dossier)' : 'Scanned CV Technical Alignment Dossier'}
+                            </strong>
+                            <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 0.15rem;">
+                                ${isAr 
+                                    ? `المجال المستهدف: <span style="color: var(--gold-bright); font-weight: 700;">${analysis.domainNameAr}</span> • التخصص الدقيق: <span style="color: #38BDF8; font-weight: 700;">${analysis.subNameAr}</span>` 
+                                    : `Target Area: <span style="color: var(--gold-bright); font-weight: 700;">${analysis.domainNameEn}</span> • Specialty: <span style="color: #38BDF8; font-weight: 700;">${analysis.subNameEn}</span>`}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.65rem;">
+                        <span style="font-size: 0.76rem; color: #94A3B8;">${isAr ? 'درجة التطابق الميداني:' : 'Discipline Match:'}</span>
+                        <strong style="font-size: 1.25rem; font-weight: 900; color: ${scoreColor};">${score}%</strong>
+                        <span style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #34D399; padding: 0.2rem 0.55rem; border-radius: 6px; font-size: 0.72rem; font-weight: 800;">
+                            <i class="fa-solid fa-check"></i> ${score >= 85 ? (isAr ? 'توافق ممتاز' : 'High Match') : (isAr ? 'توافق معتمد' : 'Verified')}
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.75rem; font-size: 0.78rem; margin-bottom: 0.75rem;">
+                    <!-- Area Matches -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 7px; padding: 0.65rem;">
+                        <div style="color: #34D399; font-weight: 800; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.35rem;">
+                            <i class="fa-solid fa-oil-well"></i> ${isAr ? 'النقاط المطابقة في المجال الرئيسي:' : 'Matched in Primary Area:'}
+                            <span style="font-size: 0.68rem; background: rgba(16, 185, 129, 0.2); padding: 0.05rem 0.35rem; border-radius: 999px;">${analysis.areaMatches.length}</span>
+                        </div>
+                        <div class="cv-term-chips">
+                            ${analysis.areaMatches.length > 0 
+                                ? analysis.areaMatches.map(m => `<span class="cv-tag area-tag"><i class="fa-solid fa-check"></i> ${m}</span>`).join('') 
+                                : `<span style="font-size: 0.72rem; color: var(--text-muted);">${isAr ? 'لا توجد مطابقة كافية' : 'None detected'}</span>`}
+                        </div>
+                    </div>
+
+                    <!-- Sub-Area Matches -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 7px; padding: 0.65rem;">
+                        <div style="color: #38BDF8; font-weight: 800; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.35rem;">
+                            <i class="fa-solid fa-bullseye"></i> ${isAr ? 'النقاط المطابقة في التخصص الدقيق:' : 'Matched in Focus Specialty:'}
+                            <span style="font-size: 0.68rem; background: rgba(56, 189, 248, 0.2); padding: 0.05rem 0.35rem; border-radius: 999px;">${analysis.subMatches.length}</span>
+                        </div>
+                        <div class="cv-term-chips">
+                            ${analysis.subMatches.length > 0 
+                                ? analysis.subMatches.map(m => `<span class="cv-tag sub-tag"><i class="fa-solid fa-check"></i> ${m}</span>`).join('') 
+                                : `<span style="font-size: 0.72rem; color: var(--text-muted);">${isAr ? 'لا توجد مطابقة كافية' : 'None detected'}</span>`}
+                        </div>
+                    </div>
+
+                    <!-- Certifications & Standards -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 7px; padding: 0.65rem;">
+                        <div style="color: var(--gold-bright); font-weight: 800; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.35rem;">
+                            <i class="fa-solid fa-award"></i> ${isAr ? 'الشهادات والأكواد المطابقة:' : 'Matched Certs & Standards:'}
+                            <span style="font-size: 0.68rem; background: rgba(212, 175, 55, 0.2); padding: 0.05rem 0.35rem; border-radius: 999px;">${analysis.certMatches.length}</span>
+                        </div>
+                        <div class="cv-term-chips">
+                            ${analysis.certMatches.length > 0 
+                                ? analysis.certMatches.map(m => `<span class="cv-tag cert-tag"><i class="fa-solid fa-award"></i> ${m}</span>`).join('') 
+                                : `<span style="font-size: 0.72rem; color: var(--text-muted);">${isAr ? 'لا توجد شهادات مسجلة' : 'None detected'}</span>`}
+                        </div>
+                    </div>
+                </div>
+
+                ${analysis.highlightedExcerpt ? `
+                <div style="background: rgba(5, 17, 36, 0.8); border: 1px dashed rgba(212, 175, 55, 0.3); border-radius: 6px; padding: 0.65rem 0.85rem; font-size: 0.74rem; color: #CBD5E1; line-height: 1.6;">
+                    <strong style="color: var(--gold-bright); display: block; margin-bottom: 0.25rem;">
+                        <i class="fa-solid fa-highlighter"></i> ${isAr ? 'مقتطف من السيرة الذاتية مع تمييز المصطلحات المطابقة:' : 'Scanned CV Excerpt with Matched Term Highlights:'}
+                    </strong>
+                    <div>${analysis.highlightedExcerpt}...</div>
+                </div>
+                ` : ''}
+            </div>
+        `;
+    }
+};
+
+// ==============================================================================
 // 4. AUTOMATED LECTURER EVALUATION ENGINE, DASHBOARD & ASSESSMENT ROSTER
 // ==============================================================================
 
 function evaluateCandidateEndToEnd(cand) {
     if (!cand) return cand;
+
+    // Run automated CV scanning & technical matching
+    xgCvEngine.scanCandidate(cand);
+
 
     const regDetails = cand.registrationDetails || {};
     cand.registrationDetails = regDetails;
@@ -2018,6 +2460,13 @@ function renderScreeningTable() {
                 <span class="score-badge ${g1Passed ? 'high' : 'low'}" style="font-size: 0.78rem;" title="${isAr ? 'مسح بوابة 1: سنوات الخبرة (40/سنة) + المؤهل + التصنيف + الشهادات + الإنجليزية' : 'Gate 1 Scanned: Experience (40/yr) + Degree + Class + Certs + English'}">
                     ${g1Pts} <small>(${g1Pct}%)</small>
                 </span>
+                ${cand.cvAnalysis ? `
+                <div style="margin-top: 0.25rem;">
+                    <span class="cv-tag area-tag cv-scan-table-badge" style="font-size: 0.68rem; padding: 0.1rem 0.45rem;" title="${isAr ? 'مطابقة السيرة الذاتية مع المجال والتخصص: ' + cand.cvAnalysis.score + '%' : 'CV Match with Area & Sub-area: ' + cand.cvAnalysis.score + '%'}">
+                        <i class="fa-solid fa-file-circle-check"></i> CV: ${cand.cvAnalysis.score}%
+                    </span>
+                </div>
+                ` : ''}
             </td>
             <td style="text-align: center; color: #93C5FD; font-weight: 700;" title="${isAr ? 'المعرفة (35%): مسح المؤهل الأكاديمي، سنوات الخبرة، التصنيف الدولي، والشهادات المعتمدة' : 'Knowledge (35%): Scanned Academic Degree, Experience Years, Global Class, and Certifications'}">${p1Score}%</td>
             <td style="text-align: center; color: var(--gold-bright); font-weight: 700;" title="${isAr ? 'التدريب (35%): مسح حقائب البرامج الـ 7، دراسات حالة SECI، والمحاكاة الهندسية' : 'Delivery (35%): Scanned Top 7 Courses, SECI Case Studies, and Engineering Simulation'}">${p2Score}%</td>
@@ -2194,6 +2643,14 @@ function updateEvaluatingCandidateDisplay() {
             statusEl.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${isAr ? 'يظهر الحساب الفوري لمعايير القبول المبدئي هنا عن كل متقدم بعد التقديم' : 'The initial qualification score breakdown will appear here as soon as an applicant submits the registration form'}`;
             statusEl.style.color = "var(--gold-bright)";
         }
+        const cvBadge = document.getElementById("calcCvScanScoreBadge");
+        const cvDetails = document.getElementById("calcCvScanDetails");
+        const cvStatusText = document.getElementById("calcCvScanStatusText");
+        const cvPill = document.getElementById("liveCvScanPill");
+        if (cvBadge) cvBadge.textContent = "0%";
+        if (cvDetails) cvDetails.textContent = isAr ? "مطابقة نقاط المجال والتخصص الدقيق" : "Discipline & Sub-Area Alignment Scan";
+        if (cvStatusText) cvStatusText.textContent = isAr ? "في الانتظار" : "Pending";
+        if (cvPill) cvPill.style.display = "none";
         renderCandidateRegistrationSummary(null);
         renderXpertgateCompetencyMatrix();
         calculateSimulationRubric();
@@ -2224,6 +2681,35 @@ function updateEvaluatingCandidateDisplay() {
     if (calcCert) calcCert.textContent = `${certPts} pts`;
     if (calcEng) calcEng.textContent = `${englishPts} pts`;
     if (liveEst) liveEst.textContent = totalPts;
+
+    // CV Alignment Scan Highlight in Gate 1 Widget
+    const cvAnalysis = cand.cvAnalysis || xgCvEngine.scanCandidate(cand);
+    const cvBadge = document.getElementById("calcCvScanScoreBadge");
+    const cvDetails = document.getElementById("calcCvScanDetails");
+    const cvStatusText = document.getElementById("calcCvScanStatusText");
+    const cvPill = document.getElementById("liveCvScanPill");
+    const cvPillText = document.getElementById("liveCvScanPillText");
+
+    if (cvAnalysis) {
+        if (cvBadge) {
+            cvBadge.textContent = `${cvAnalysis.score}%`;
+            cvBadge.style.color = cvAnalysis.score >= 85 ? "#34D399" : (cvAnalysis.score >= 70 ? "var(--gold-bright)" : "#F87171");
+        }
+        if (cvDetails) {
+            cvDetails.innerHTML = isAr
+                ? `<strong style="color: #34D399;">${cvAnalysis.areaMatches.length}</strong> مطابقة بالمجال (${cvAnalysis.domainNameAr}) • <strong style="color: #38BDF8;">${cvAnalysis.subMatches.length}</strong> بالتخصص (${cvAnalysis.subNameAr}) • <strong style="color: var(--gold-bright);">${cvAnalysis.certMatches.length}</strong> شهادات`
+                : `<strong style="color: #34D399;">${cvAnalysis.areaMatches.length}</strong> in ${cvAnalysis.domainNameEn} • <strong style="color: #38BDF8;">${cvAnalysis.subMatches.length}</strong> in ${cvAnalysis.subNameEn} • <strong style="color: var(--gold-bright);">${cvAnalysis.certMatches.length}</strong> Certs`;
+        }
+        if (cvStatusText) {
+            cvStatusText.textContent = cvAnalysis.score >= 85 ? (isAr ? 'توافق ممتاز (High)' : 'High Alignment') : (isAr ? 'توافق معتمد (Verified)' : 'Verified Match');
+        }
+        if (cvPill && cvPillText) {
+            cvPill.style.display = "inline-flex";
+            cvPillText.textContent = isAr 
+                ? `مطابقة السيرة الذاتية للتخصص: ${cvAnalysis.score}%` 
+                : `CV Specialty Match: ${cvAnalysis.score}%`;
+        }
+    }
 
     if (statusEl) {
         if (totalPts >= 850) {
@@ -2327,6 +2813,8 @@ function renderCandidateRegistrationSummary(cand) {
     const cvUrl = reg.cvUrl || "";
     const cvFileName = reg.cvFileName || `${cand.code}_CV.pdf`;
 
+    const cvAnalysis = cand.cvAnalysis || xgCvEngine.scanCandidate(cand);
+
     container.innerHTML = `
         <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 12px; padding: 1.25rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.85rem; margin-bottom: 1rem;">
@@ -2356,6 +2844,9 @@ function renderCandidateRegistrationSummary(cand) {
                     </a>
                 </div>
             </div>
+
+            <!-- Scanned CV Technical Analysis & Area/Sub-Area Match Dossier -->
+            ${xgCvEngine.renderCommitteeDossier(cvAnalysis, isAr)}
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.85rem; font-size: 0.82rem; margin-bottom: 1rem;">
                 <div style="background: rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
@@ -3251,6 +3742,7 @@ function populateDomainDropdowns() {
                     pillsWrap.querySelectorAll(".sub-pill-btn").forEach(b => b.classList.remove("active"));
                     btn.classList.add("active");
                     window.fillSpecialtyProgramsAndScroll(false);
+                    if (window.reScanLiveApplicantCv) window.reScanLiveApplicantCv();
                 });
             });
         }
@@ -3296,6 +3788,7 @@ function populateDomainDropdowns() {
 
         // Pre-populate the 7 training programs with the selected specialty's priority topics
         window.fillSpecialtyProgramsAndScroll(false);
+        if (window.reScanLiveApplicantCv) window.reScanLiveApplicantCv();
     };
 
     // When dropdown changes, also update the active pill in dossier
@@ -3312,11 +3805,27 @@ function populateDomainDropdowns() {
             });
         }
         window.fillSpecialtyProgramsAndScroll(false);
+        if (window.reScanLiveApplicantCv) window.reScanLiveApplicantCv();
     };
 
     domainSelect.onchange = updateSubDisciplinesAndCerts;
     updateSubDisciplinesAndCerts();
 }
+
+window.reScanLiveApplicantCv = function() {
+    if (window._currentApplicantCvText && window._currentApplicantCvText.trim().length >= 20) {
+        const domainSelect = document.getElementById("appDomain");
+        const subSelect = document.getElementById("appSubDiscipline");
+        const domainId = domainSelect ? domainSelect.value : "";
+        const subId = subSelect ? subSelect.value : "";
+        const scanRes = xgCvEngine.analyzeCv(window._currentApplicantCvText, domainId, subId);
+        const liveCard = document.getElementById("cvLiveScanCard");
+        if (liveCard) {
+            liveCard.style.display = "block";
+            liveCard.innerHTML = xgCvEngine.renderLiveScanCard(scanRes, AppState.currentLang === "ar");
+        }
+    }
+};
 
 function initApplicantIntakeForm() {
     populateDomainDropdowns();
@@ -3413,6 +3922,19 @@ function initApplicantIntakeForm() {
                 cvUploadStatus.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${isAr ? 'تم إرفاق السيرة الذاتية النموذجية بنجاح:' : 'Sample CV attached:'} <strong>Dr_Sameh_Petroleum_Advisor_CV.pdf</strong><br><small style="color: var(--gold-bright);"><i class="fa-solid fa-check-double"></i> ${isAr ? 'تم ربط السيرة الذاتية والبيانات بنجاح! سيتم تطبيق التقييم الآلي الشامل فور الضغط على زر التقديم أدناه.' : 'CV and credentials linked! Automated evaluation will run instantly upon clicking Submit below.'}</small>`;
             }
 
+            // Inject and scan Sample CV text for Dr. Sameh
+            const appCvTextPasteEl = document.getElementById("appCvTextPaste");
+            if (appCvTextPasteEl) appCvTextPasteEl.value = xgCvEngine.sampleCvText;
+            window._currentApplicantCvText = xgCvEngine.sampleCvText;
+            const cvLiveScanCardEl = document.getElementById("cvLiveScanCard");
+            if (cvLiveScanCardEl) {
+                const domainId = document.getElementById("appDomain")?.value || "downstream";
+                const subId = document.getElementById("appSubDiscipline")?.value || "dynamic_sim";
+                const scanRes = xgCvEngine.analyzeCv(xgCvEngine.sampleCvText, domainId, subId);
+                cvLiveScanCardEl.style.display = "block";
+                cvLiveScanCardEl.innerHTML = xgCvEngine.renderLiveScanCard(scanRes, isAr);
+            }
+
             if (videoUploadStatus) {
                 videoUploadStatus.style.display = "block";
                 videoUploadStatus.style.color = "#34D399";
@@ -3420,8 +3942,42 @@ function initApplicantIntakeForm() {
             }
 
             showToast(isAr 
-                ? "تمت تعبئة بيانات النموذج التجريبي وربط السيرة الذاتية! انقر على زر التقديم بأسفل الصفحة لاختبار التقييم الآلي فوراً." 
-                : "Sample application & CV filled! Click the Submit button at the bottom to test automated evaluation instantly.");
+                ? "تمت تعبئة بيانات النموذج التجريبي وفحص السيرة الذاتية! انقر على زر التقديم بأسفل الصفحة لاختبار التقييم الآلي فوراً." 
+                : "Sample application & CV loaded and scanned! Click the Submit button at the bottom to test automated evaluation instantly.");
+        });
+    }
+
+    // Toggle Manual CV Paste & Live CV Scan
+    const toggleCvPasteBtn = document.getElementById("toggleCvPasteBtn");
+    const cvPasteWrap = document.getElementById("cvPasteWrap");
+    const appCvTextPaste = document.getElementById("appCvTextPaste");
+    const cvLiveScanCard = document.getElementById("cvLiveScanCard");
+
+    if (toggleCvPasteBtn && cvPasteWrap) {
+        toggleCvPasteBtn.addEventListener("click", () => {
+            const isHidden = cvPasteWrap.style.display === "none" || !cvPasteWrap.style.display;
+            cvPasteWrap.style.display = isHidden ? "block" : "none";
+            if (isHidden && appCvTextPaste) {
+                appCvTextPaste.focus();
+            }
+        });
+    }
+
+    if (appCvTextPaste) {
+        appCvTextPaste.addEventListener("input", () => {
+            const text = appCvTextPaste.value;
+            window._currentApplicantCvText = text;
+            if (text.trim().length >= 20) {
+                const domainId = document.getElementById("appDomain")?.value;
+                const subId = document.getElementById("appSubDiscipline")?.value;
+                const scanRes = xgCvEngine.analyzeCv(text, domainId, subId);
+                if (cvLiveScanCard) {
+                    cvLiveScanCard.style.display = "block";
+                    cvLiveScanCard.innerHTML = xgCvEngine.renderLiveScanCard(scanRes, AppState.currentLang === "ar");
+                }
+            } else if (cvLiveScanCard && !window._currentApplicantCvText) {
+                cvLiveScanCard.style.display = "none";
+            }
         });
     }
 
@@ -3454,7 +4010,25 @@ function initApplicantIntakeForm() {
             if (cvUploadStatus) {
                 cvUploadStatus.style.display = "block";
                 cvUploadStatus.style.color = "var(--gold-bright)";
-                cvUploadStatus.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${isAr ? 'جاري رفع ملف السيرة الذاتية (CV)...' : 'Uploading your CV...'}`;
+                cvUploadStatus.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${isAr ? 'جاري فحص ورفع ملف السيرة الذاتية (CV)...' : 'Scanning & uploading your CV...'}`;
+            }
+
+            // Extract CV text client-side via PDF.js / text for instant specialty matching
+            try {
+                const extractedText = await xgCvEngine.extractTextFromFile(file);
+                if (extractedText && extractedText.trim().length >= 20) {
+                    window._currentApplicantCvText = extractedText;
+                    if (appCvTextPaste) appCvTextPaste.value = extractedText;
+                    const domainId = document.getElementById("appDomain")?.value;
+                    const subId = document.getElementById("appSubDiscipline")?.value;
+                    const scanRes = xgCvEngine.analyzeCv(extractedText, domainId, subId);
+                    if (cvLiveScanCard) {
+                        cvLiveScanCard.style.display = "block";
+                        cvLiveScanCard.innerHTML = xgCvEngine.renderLiveScanCard(scanRes, isAr);
+                    }
+                }
+            } catch (scanErr) {
+                console.warn("Client-side CV text scan notice:", scanErr);
             }
 
             try {
@@ -3474,7 +4048,7 @@ function initApplicantIntakeForm() {
                     }
                     if (cvUploadStatus) {
                         cvUploadStatus.style.color = "#34D399";
-                        cvUploadStatus.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${isAr ? 'تم رفع السيرة الذاتية بنجاح (مرفق أساسي معتمد):' : 'CV uploaded successfully:'} <strong>${file.name}</strong> — <a href="${data.url}?download=1" download="${file.name}" style="color: var(--gold-bright); text-decoration: underline;">${isAr ? 'تحميل السي في المرفوع' : 'Download Uploaded CV'}</a><br><small style="color: var(--gold-bright);"><i class="fa-solid fa-check-double"></i> ${isAr ? 'تم ربط السيرة الذاتية بنجاح! سيتم تطبيق التقييم الآلي الشامل ومنح الدرجة المعتمدة فور الضغط على زر التقديم.' : 'CV linked successfully! Automated evaluation and accredited tier scoring will run immediately upon form submission.'}</small>`;
+                        cvUploadStatus.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${isAr ? 'تم فحص ورفع السيرة الذاتية بنجاح (مرفق أساسي معتمد):' : 'CV scanned & uploaded successfully:'} <strong>${file.name}</strong> — <a href="${data.url}?download=1" download="${file.name}" style="color: var(--gold-bright); text-decoration: underline;">${isAr ? 'تحميل السي في المرفوع' : 'Download Uploaded CV'}</a><br><small style="color: var(--gold-bright);"><i class="fa-solid fa-check-double"></i> ${isAr ? 'تم ربط السيرة الذاتية ومطابقة التخصص بنجاح! سيتم تطبيق التقييم الآلي الشامل فور الضغط على زر التقديم.' : 'CV linked & matched! Automated evaluation and accredited tier scoring will run immediately upon form submission.'}</small>`;
                     }
                 } else {
                     throw new Error("CV upload failed");
@@ -3484,7 +4058,7 @@ function initApplicantIntakeForm() {
                 if (cvUploadedUrlInput) cvUploadedUrlInput.value = blobUrl;
                 if (cvUploadStatus) {
                     cvUploadStatus.style.color = "#34D399";
-                    cvUploadStatus.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${isAr ? 'تم إرفاق السيرة الذاتية بنجاح:' : 'CV attached:'} <strong>${file.name}</strong><br><small style="color: var(--gold-bright);"><i class="fa-solid fa-check-double"></i> ${isAr ? 'تم ربط السيرة الذاتية بنجاح! سيتم تطبيق التقييم الآلي الشامل ومنح الدرجة المعتمدة فور الضغط على زر التقديم.' : 'CV linked successfully! Automated evaluation and accredited tier scoring will run immediately upon form submission.'}</small>`;
+                    cvUploadStatus.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${isAr ? 'تم فحص وإرفاق السيرة الذاتية بنجاح:' : 'CV scanned & attached:'} <strong>${file.name}</strong><br><small style="color: var(--gold-bright);"><i class="fa-solid fa-check-double"></i> ${isAr ? 'تم ربط السيرة الذاتية ومطابقة التخصص بنجاح! سيتم تطبيق التقييم الآلي الشامل فور الضغط على زر التقديم.' : 'CV linked & matched! Automated evaluation and accredited tier scoring will run immediately upon form submission.'}</small>`;
                 }
             }
         });
@@ -3753,8 +4327,14 @@ function initApplicantIntakeForm() {
                 coursesDelivered: 7,
                 traineesCount: 140,
                 seciCaseStudyEn: `Prepared 7 specialized training courses and practical field case studies in ${domainObj ? domainObj.nameEn : 'Petroleum Operations'}.`,
-                seciCaseStudyAr: `توثيق ونمذجة 7 برامج تدريبية تخصصية وحلول ميدانية في مجال ${domainObj ? domainObj.nameAr : 'العمليات البترولية'}.`
+                seciCaseStudyAr: `توثيق ونمذجة 7 برامج تدريبية تخصصية وحلول ميدانية في مجال ${domainObj ? domainObj.nameAr : 'العمليات البترولية'}.`,
+                cvText: window._currentApplicantCvText || ""
             };
+
+            // Run CV scanning & technical matching
+            const cvScanResult = xgCvEngine.scanCandidate(newCandidate, newCandidate.cvText);
+            newCandidate.cvAnalysis = cvScanResult;
+            registrationDetails.cvAnalysis = cvScanResult;
 
             // Apply Automated End-to-End Evaluation based on application data & lecturer assessment criteria
             evaluateCandidateEndToEnd(newCandidate);
@@ -3773,6 +4353,16 @@ function initApplicantIntakeForm() {
             updateEvaluatingCandidateDisplay();
             DbService.updateDbStatusUi(AppState.isDbConnected, AppState.candidates.length);
             form.reset();
+            window._currentApplicantCvText = "";
+            const liveScanCard = document.getElementById("cvLiveScanCard");
+            if (liveScanCard) {
+                liveScanCard.style.display = "none";
+                liveScanCard.innerHTML = "";
+            }
+            const appCvTextPaste = document.getElementById("appCvTextPaste");
+            if (appCvTextPaste) appCvTextPaste.value = "";
+            const cvPasteWrap = document.getElementById("cvPasteWrap");
+            if (cvPasteWrap) cvPasteWrap.style.display = "none";
             if (declNameInput) delete declNameInput.dataset.edited;
             if (signatureInput) delete signatureInput.dataset.edited;
             if (videoUploadStatus) videoUploadStatus.style.display = "none";

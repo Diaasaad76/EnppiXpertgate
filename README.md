@@ -17,6 +17,10 @@ The application provides 4 key role-based interfaces accessible from the top nav
 
 ### 2. Trainer Registration (تسجيل المدربين)
 - **Comprehensive Intake Form:** Covering basic information, current sector entity, academic qualifications, and the top 7 proposed training programs.
+- **Section 2 (Automated CV Scan & Discipline Alignment):**
+  - Instant in-browser text extraction from uploaded PDF / Word CVs via `pdf.js` with manual paste/preview toggle (`#toggleCvPasteBtn`, `#appCvTextPaste`).
+  - Real-time technical scanning and matching against all 13 petroleum disciplines, focus sub-disciplines, and engineering standards (API, ASME, ISO, NEBOSH, SPE, PMP, CCPS, Aspen HYSYS).
+  - Live alignment card (`#cvLiveScanCard`) displaying match score %, matched primary area points, and matched focus specialty points.
 - **Section 8 (2-Minute Introductory Video Pitch):** Dual-option card interface with clear visual icons distinguishing between:
   - `Direct Video File Upload` (`.mp4`, `.mov`, `.webm`, capped at 120s)
   - `Paste Video Pitch Link` (YouTube, Vimeo, OneDrive, Teams, Google Drive)
@@ -24,9 +28,10 @@ The application provides 4 key role-based interfaces accessible from the top nav
 
 ### 3. Evaluation Committee (لجنة التحكيم والتقييم)
 - **Protected Access Gate:** Clean committee login modal with demo credentials displayed on screen (`committee` / `Enppi2026!`).
-- **Unified Candidate Review Roster:** All sector applicants displayed in one sortable, searchable table.
+- **Unified Candidate Review Roster:** All sector applicants displayed in one sortable, searchable table with Gate 1 scores, readiness badges, and instant CV Match tags.
 - **Live Candidate Dossier:** Selecting any candidate dynamically loads:
-  - Gate 1 Score breakdown (out of 1000 points) with readiness status.
+  - **Gate 1 Initiation Score Highlight Widget:** Dedicated glowing card showing verified CV alignment score %, matched Area & Specialty counts, and live status pill.
+  - **Scanned CV Technical Alignment Dossier:** In-depth breakdown showing matched primary area points (green chips), matched focus specialty points (cyan chips), matched certifications (gold chips), and a highlighted CV excerpt.
   - Candidate registration summary, proposed 7 courses, and direct CV download button.
   - Synchronized 2-minute introductory video player.
 - **Physical In-Person Trainer Assessment Sheet (15-min Presentation, 100%):** Rebuilt strictly from `competencies matrix.docx`:
@@ -97,7 +102,9 @@ git push -u origin main
     │   ├── logo_full.png        # Full vector badge logo
     │   ├── competencies matrix.docx # Source assessment matrix
     │   ├── Template Form for Expert Registration.docx # Official intake template
-    │   └── template to evaluate trainer.docx # Evaluation sheet template
+    │   ├── template to evaluate trainer.docx # Evaluation sheet template
+    │   ├── lib/                 # Client-side PDF.js libraries (pdf.min.js, pdf.worker.min.js)
+    │   └── sample-cvs/          # Benchmark and test petroleum CVs
     └── video/
         └── sample-video.mp4     # Local 2-minute introductory video showcase
 ```

@@ -50,14 +50,22 @@ The application features a responsive, role-based single-page architecture with 
 - **Step 9: Financial Information:** Bank Account details for trainer compensation.
 - **Step 10: Official Declaration & Signature:** Checkbox confirmation and digital signature.
 - **Instant Gate 1 Indicator:** Live 1000-point calculation (Experience, Degree, Expert Tier, Certifications, Language) updating dynamically.
+- **Automated CV Scanning & Specialty Matching Engine (`xgCvEngine`):**
+  - Instant client-side text extraction from uploaded PDF/Word CVs via `pdf.js` with manual paste/preview toggle (`#toggleCvPasteBtn`, `#appCvTextPaste`).
+  - Scans and matches CV content against primary petroleum disciplines, focus sub-disciplines, and engineering standards (API, ASME, ISO, NEBOSH, PMP, SPE, Aspen HYSYS, etc.).
+  - Real-time live card (`#cvLiveScanCard`) shows instant alignment score, matched area points, and matched specialty points.
 
 ### 3. Evaluation Committee (`committeeView`)
 - **Access Gate:** Interactive login modal with displayed credentials (`committee` / `Enppi2026!`).
-- **Unified Candidates Table:** Searchable, filterable candidate roster with Gate 1 scores and readiness indicators.
+- **Unified Candidates Table:** Searchable, filterable candidate roster with Gate 1 scores, live readiness indicators, and instant CV Match tags.
 - **Candidate Dossier Review:**
   - Candidate details breakdown (including Company, Department, Job Title, **Direct Manager**, HR Email, and phone).
   - Attached CV download (`.pdf` / `.docx`).
+  - **Scanned CV Technical Alignment Dossier:** Dedicated committee dossier card displaying discipline alignment percentage, matched primary area points (green chips), matched focus specialty points (cyan chips), matched certifications/standards (gold chips), and a highlighted CV excerpt.
   - Synchronized 2-minute introductory video player.
+- **Gate 1 Initiation Score Highlight Widget (`#committeeGate1Widget`):**
+  - Featured CV Alignment Scan row with highlighted glowing border, match percentage badge, and area/sub-discipline breakdown.
+  - Live status pill (`#liveCvScanPill`) reflecting CV alignment status in real time.
 - **Physical In-Person Trainer Assessment Sheet (15-Minute Presentation, 100%):**
   - Rebuilt strictly from `competencies matrix.docx`.
   - **5 Weighted Evaluation Dimensions:**
